@@ -121,8 +121,12 @@
 	    firefox
 	    flameshot
 	    gcc
+	    gh
 	    ghostty
 	    git
+	    go
+	    icu
+	    libreoffice
 	    mpv
 	    neovim
 	    nodejs_23
@@ -152,12 +156,13 @@
 	variables = {
 	    EDITOR = "nvim";
 	    VISUAL = "nvim";
+	    BROWSER = "/run/current-system/sw/bin/chromium";
 	};
     };
 
-# xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
+    # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
 
-# System version
+    # System version
     system.stateVersion = "24.11"; # Did you read the comment?
 
 }

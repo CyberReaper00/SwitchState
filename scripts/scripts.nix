@@ -1,5 +1,6 @@
 # ===============> Custom scripts for all users
-
+mkdir -p /home/nixos/.local/share/applications/
+ln -sf /etc/nixos/scripts/launcher_scripts /home/nixos/.local/share/applications/
 
 # ===============> Configs for the root user
 # Nvim config
@@ -29,3 +30,7 @@ chown nixos:users /home/nixos/.config/ghostty/config
 mkdir -p /home/nixos/.config/powershell
 ln -sf /etc/nixos/configs/Microsoft.PowerShell_profile.ps1 /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
 chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
+
+# Bashrc
+ln -sf /etc/nixos/scripts/.bashrc /home/nixos/.bashrc
+chown nixos:users /home/nixos/.bashrc
