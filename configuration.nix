@@ -11,7 +11,7 @@
 	];
 
     nixpkgs.config = {
-	allowUnfree = true;
+	allowUnfree = true; # something new
 	permittedInsecurePackages = [
 	    "electron-27.3.11"
 	];
