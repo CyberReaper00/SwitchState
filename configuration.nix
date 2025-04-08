@@ -1,17 +1,17 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
+    # Edit this configuration file to define what should be installed on
+    # your system. Help is available in the configuration.nix(5) man page, on
+    # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
 
 {
     imports =
-	[ # Include the results of the hardware scan.
+	[     # Include the results of the hardware scan.
 	./hardware-configuration.nix
 	];
 
     nixpkgs.config = {
-	allowUnfree = true; # something new
+	allowUnfree = true;
 	permittedInsecurePackages = [
 	    "electron-27.3.11"
 	];
@@ -23,17 +23,28 @@
 	};
     };
 
-# Use the systemd-boot EFI boot loader.
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
+    # Use the systemd-boot EFI boot loader.
+    boot = {
+	loader = {
+	    systemd-boot = {
+		enable = true;
+	    };
+	    efi = {
+		canTouchEfiVariables = true;
+	    };
+	};
+    };
 
-    networking.hostName = "nixos"; # Define your hostname.
-	networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+    # Set networking settings
+    networking = {
+	enable = true;
+	hostName = "nixos";
+    };
 
-# Set your time zone.
-	time.timeZone = "Asia/Karachi";
+    # Set your time zone.
+    time.timeZone = "Asia/Karachi";
 
-# Extract dwm confg information from its source folder
+    # Extract dwm confg information from its source folder
     nixpkgs.overlays = [
 	(final: prev: {
 	 dwm = prev.dwm.overrideAttrs (old: {
@@ -42,7 +53,7 @@
 	 })
     ];
 
-# Enable the X11 windowing system
+    # Enable the X11 windowing system
     services.xserver = {
 	enable = true;
 	windowManager = {
@@ -61,7 +72,7 @@
 	    };
 	};
 
-# Configure keymap in X11
+    # Configure keymap in X11
 	xkb = {
 	    layout = "us";
 	    options = "caps:escape";
@@ -69,22 +80,22 @@
 
     };
 
-# Enable CUPS to print documents.
+    # Enable CUPS to print documents.
     services.printing.enable = true;
 
-# Enable sound.
+    # Enable sound.
     services.pipewire = {
 	enable = true;
 	pulse.enable = true;
     };
 
-# Enable audio settings
+    # Enable audio settings
     hardware.pulseaudio.enable = false;
 
-# Enable touchpad support (enabled default in most desktopManager).
+    # Enable touchpad support (enabled default in most desktopManager).
     services.libinput.enable = true;
 
-# Define a user account and its settings
+    # Define a user account and its settings
     users.users.nixos = {
 	isNormalUser = true;
 	extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" ];
@@ -94,7 +105,7 @@
 	shell = pkgs.powershell;
     };
 
-# Define program specific settings
+    # Define program specific settings
     programs = {
 	chromium = {
 	    enable = true;
@@ -103,7 +114,7 @@
 	};
     };
 
-# System font
+    # System font
     fonts = {
 	packages = with pkgs; [
 	    hasklig
@@ -111,7 +122,7 @@
 	];
     };
 
-# List packages installed in system profile. To search, run:
+    # List packages installed in system profile. To search, run:
     environment = {
 	systemPackages = with pkgs; [
 	    OVMF
@@ -125,10 +136,12 @@
 	    ghostty
 	    git
 	    go
+	    gost
 	    icu
 	    libreoffice
 	    mpv
 	    neovim
+	    neovide
 	    nodejs_23
 	    obsidian
 	    ollama
@@ -139,6 +152,7 @@
 	    python3Full
 	    python3Packages.pip
 	    python311
+	    python311Packages.nuitka
 	    qemu
 	    rofi
 	    tmux
@@ -163,7 +177,7 @@
     # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
 
     # System version
-    system.stateVersion = "24.11"; # Did you read the comment?
+    system.stateVersion = "24.11";     # Did you read the comment?
 
 }
 

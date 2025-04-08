@@ -9,7 +9,7 @@ ln -sf /etc/nixos/configs/init.lua /root/.config/nvim/init.lua
 
 # Ghostty config
 mkdir -p /root/.config/ghostty
-ln -sf /etc/nixos/configs/config /root/.config/ghostty/config
+ln -sf /etc/nixos/configs/ghostty-config.toml /root/.config/ghostty/ghostty-config.toml
 
 # Powershell config
 mkdir -p /root/.config/powershell
@@ -23,8 +23,8 @@ chown nixos:users /home/nixos/.config/nvim/init.lua
 
 # Ghostty config
 mkdir -p /home/nixos/.config/ghostty
-ln -sf /etc/nixos/configs/config /home/nixos/.config/ghostty/config
-chown nixos:users /home/nixos/.config/ghostty/config
+ln -sf /etc/nixos/configs/ghostty-config.toml /home/nixos/.config/ghostty/ghostty-config.toml
+chown nixos:users /home/nixos/.config/ghostty/ghostty-config.toml
 
 # Powershell config
 mkdir -p /home/nixos/.config/powershell
@@ -34,3 +34,10 @@ chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps
 # Bashrc
 ln -sf /etc/nixos/scripts/.bashrc /home/nixos/.bashrc
 chown nixos:users /home/nixos/.bashrc
+
+# Xsetroot
+ln -sf /etc/nixos/scripts/xsession /home/nixos/.xsession
+chown nixos:users /home/nixos/.xsession
+
+ln -sf /etc/nixos/scripts/dwm_status.sh /home/nixos/.dwm_status.sh
+chown nixos:users /home/nixos/.dwm_status.sh
