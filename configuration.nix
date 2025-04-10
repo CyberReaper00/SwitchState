@@ -6,8 +6,8 @@
 
 {
     imports =
-	[     # Include the results of the hardware scan.
-	./hardware-configuration.nix
+	[   # Include the results of the hardware scan.
+	    ./hardware-configuration.nix
 	];
 
     nixpkgs.config = {
@@ -16,6 +16,11 @@
 	    "electron-27.3.11"
 	];
     };
+
+    nix.nixPath = [
+	"nixos-config=/home/nixos/nixos/configuration.nix"
+	"nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+    ];
 
     system.activationScripts = {
 	user-configs = {
@@ -37,8 +42,10 @@
 
     # Set networking settings
     networking = {
-	enable = true;
 	hostName = "nixos";
+	networkmanager = {
+	    enable = true;
+	};
     };
 
     # Set your time zone.
@@ -128,10 +135,10 @@
 	    OVMF
 	    audacity
 	    dolphin
+	    discord
 	    dwm
 	    firefox
 	    flameshot
-	    gcc
 	    gh
 	    ghostty
 	    git
@@ -149,10 +156,6 @@
 	    pavucontrol
 	    powershell
 	    pureref
-	    python3Full
-	    python3Packages.pip
-	    python311
-	    python311Packages.nuitka
 	    qemu
 	    rofi
 	    tmux
@@ -165,8 +168,28 @@
 	    xclip
 	    xorg.xsetroot
 	    xwinwrap
+
+	    # Python packages
+	    python312Full
+	    python312Packages.pip
+	    python312Packages.nuitka
+	    python312Packages.xxhash
+	    python312Packages.datetime
+	    python312Packages.openpyxl
+	    python312Packages.discordpy
+	    python312Packages.requests
+	    python312Packages.aiohttp
+	    python312Packages.openpyxl
+	    python312Packages.tzdata
+
+	    # C Packages
+	    gcc
+	    gdb
+	    clang-tools
+	    pkg-config
 	];
 
+	# Default Applications
 	variables = {
 	    EDITOR = "nvim";
 	    VISUAL = "nvim";
@@ -174,10 +197,16 @@
 	};
     };
 
+    # Default applications for specific file types
+    xdg.portal.enable = true;
+    xdg.mime.defaultApplications = {
+	"text/plain" = "org.xfce.mousepad.desktop";
+	"application/pdf" = "chromium.desktop";
+	"image/png" = "pureref.desktop";
+    };
+
     # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
 
     # System version
-    system.stateVersion = "24.11";     # Did you read the comment?
-
+    system.stateVersion = "24.11";
 }
-
