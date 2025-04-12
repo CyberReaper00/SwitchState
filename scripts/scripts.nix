@@ -1,9 +1,3 @@
-# ===============> Custom scripts for all users
-
-# This places all custom .desktop files in the home folder
-mkdir -p /usr/share/applications/
-ln -sf /home/nixos/nixos/scripts/launcher_scripts /usr/share/applications/
-
 # ===============> Configs for the root user
 # Nvim config
 mkdir -p /root/.config/nvim
@@ -37,8 +31,12 @@ chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps
 ln -sf /home/nixos/nixos/scripts/.bashrc /home/nixos/.bashrc
 chown nixos:users /home/nixos/.bashrc
 
-#Xsetroot
+# Xsetroot
 ln -sf /home/nixos/nixos/scripts/launcher_scripts/xsession /home/nixos/.xsession
 ln -sf /home/nixos/nixos/scripts/launcher_scripts/dwm_status.sh /home/nixos/.dwm_status.sh
-
 chown nixos:users /home/nixos/.xsession /home/nixos/.dwm_status.sh
+
+# Custom .desktop files
+mkdir -p /home/nixos/.local/share/applications/
+ln -sf /home/nixos/nixos/scripts/launcher_scripts /home/nixos/.local/share/applications/
+chown nixos:users /home/nixos/.local/share/applications

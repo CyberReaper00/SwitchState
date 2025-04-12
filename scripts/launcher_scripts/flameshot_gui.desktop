@@ -1,9 +1,6 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
-Version=1.0
-Terminal=false
-Type=Application
 Name=Flameshot GUI
 Exec=flameshot gui
-Icon=flameshot
+Type=Application
+Terminal=false
 Categories=Utility

@@ -1,3 +1,2 @@
-#!/bin/sh
 ~/.dwm_status.sh &
 exec dwm

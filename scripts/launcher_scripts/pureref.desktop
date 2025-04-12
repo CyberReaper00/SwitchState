@@ -1,7 +1,6 @@
 [Desktop Entry]
-Version=1.0
-Terminal=false
-Type=Application
 Name=PureRef
-Exec=pureref
+Exec=/run/current-system/sw/bin/pureref
+Type=Application
+Terminal=false
 Categories=Utility

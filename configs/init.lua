@@ -124,7 +124,7 @@ nmap("<leader>t", ":term<CR>")
 nmap("<leader>S", ":30vnew<CR>")
 nmap("<leader>h", ":vert resize 30<CR>")
 nmap("<leader>n", ":tabnew<CR>")
-vim.keymap.set("t", "<leader><leader>", "<C-\\><C-n>")
+vim.keymap.set("t", "<leader><Esc>", "<C-\\><C-n>")
 
 --=== Movement remaps ===
 nmap("k","kzz")
@@ -155,6 +155,8 @@ nmap("U", "<C-r>")
 nmap("dH", "d^")
 nmap("x", "X")
 nmap("X", "x")
+vim.keymap.set("i", "<M-B>", "<C-w>")
+vim.keymap.set("i", "<M-b>", "<BS>")
 
 --=== Searching remaps ===
 nmap("<Esc>", ":noh<CR>")
@@ -166,7 +168,5 @@ wait_map("F")
 --=== LaTeX Config ===
 vim.cmd([[
     " Automatic block insertion
-    iabbrev {p {<CR>}<Esc>O
-    iabbrev { {}<Esc>a
 ]])
 

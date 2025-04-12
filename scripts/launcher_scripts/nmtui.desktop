@@ -1,8 +1,6 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
-Version=1.0
-Terminal=true
-Type=Application
 Name=NMTUI
 Exec=nmtui
+Type=Application
+Terminal=true
 Categories=Utility

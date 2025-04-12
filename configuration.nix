@@ -1,6 +1,5 @@
     # Edit this configuration file to define what should be installed on
     # your system. Help is available in the configuration.nix(5) man page, on
-
     # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
@@ -207,6 +206,20 @@
     };
 
     # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
+
+    security.sudo = {
+	enable = true;
+	wheelNeedsPassword = false;
+	extraRules = [
+	    {
+		users = [ "nixos" ];
+		commands = [{
+		    command = "/run/current-system/sw/bin/neovide";
+		    options = [ "SETENV" "NOPASSWD" ];
+		}];
+	    }
+	];
+    };
 
     # System version
     system.stateVersion = "24.11";
