@@ -1,0 +1,8 @@
+# Start system info bar
+~/.dwm_status.sh &
+
+# Automatic screen dimmer
+~/.brightness_controller.sh &
+
+# Start DWM
+exec dwm

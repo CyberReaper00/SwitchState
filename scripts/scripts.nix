@@ -28,13 +28,17 @@ ln -sf /home/nixos/nixos/configs/Microsoft.PowerShell_profile.ps1 /home/nixos/.c
 chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
 
 # Bashrc
-ln -sf /home/nixos/nixos/scripts/.bashrc /home/nixos/.bashrc
+ln -sf /home/nixos/nixos/scripts/bashrc /home/nixos/.bashrc
 chown nixos:users /home/nixos/.bashrc
 
 # Xsetroot
-ln -sf /home/nixos/nixos/scripts/launcher_scripts/xsession /home/nixos/.xsession
-ln -sf /home/nixos/nixos/scripts/launcher_scripts/dwm_status.sh /home/nixos/.dwm_status.sh
-chown nixos:users /home/nixos/.xsession /home/nixos/.dwm_status.sh
+ln -sf /home/nixos/nixos/scripts/xsession /home/nixos/.xsession
+ln -sf /home/nixos/nixos/scripts/dwm_status.sh /home/nixos/.dwm_status.sh
+ln -sf /home/nixos/nixos/scripts/brightness_controller.sh /home/nixos/.brightness_controller.sh
+chown nixos:users \
+/home/nixos/.xsession \
+/home/nixos/.dwm_status.sh \
+/home/nixos/.brightness_controller.sh
 
 # Custom .desktop files
 mkdir -p /home/nixos/.local/share/applications/

@@ -17,10 +17,15 @@
 	];
     };
 
-    nix.nixPath = [
-	"nixos-config=/home/nixos/nixos/configuration.nix"
-	"nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
-    ];
+    nix = {
+	nixPath = [
+	    "nixos-config=/home/nixos/nixos/configuration.nix"
+	    "nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos"
+	];
+	settings = {
+	    experimental-features = [ "nix-command" "flakes" ];
+	};
+    };
 
     system.activationScripts = {
 	user-configs = {
@@ -48,17 +53,40 @@
 	};
     };
 
+
     # Set your time zone.
     time.timeZone = "Asia/Karachi";
 
     # Extract dwm confg information from its source folder
     nixpkgs.overlays = [
 	(final: prev: {
-	 dwm = prev.dwm.overrideAttrs (old: {
-		 src = ./configs/dwm;
-		 });
-	 })
+		dwm = prev.dwm.overrideAttrs (old: {
+		src = ./configs/dwm;
+	    });
+	})
+
+	# (final: prev: let
+	#     unstable = import <nixpkgs-unstable> { };
+	# in {
+	#     ollama = prev.ollama.overrideAttrs (oldAttrs: rec {
+	# 	src = prev.fetchFromGitHub {
+	# 	    owner = "ollama";
+	# 	    repo = "ollama";
+	# 	    rev = "v0.6.5";
+	# 	    sha256 = "sha256-l+JYQjl6A0fKONxtgCtc0ztT18rmArGKcO2o+p4H95M=";
+	#     };
+	# 
+	# 	buildPhase = ''
+	# 	    export GOFLAGS=-mod=mod
+	# 	    ${oldAttrs.buildPhase or "go build"}
+	# 	'';
+	# 	nativeBuildInputs = [ unstable.go_1_24 ];
+	# 	patches = [];
+	#     });
+	# })
     ];
+    # buildInputs = (oldAttrs.buildInputs or []) ++ [ prev.go_1_24 ];
+    # https://github.com/ollama/ollama/archive/refs/tags/v0.6.5.tar.gz;
 
     # Enable the X11 windowing system
     services.xserver = {
@@ -102,6 +130,11 @@
     # Enable touchpad support (enabled default in most desktopManager).
     services.libinput.enable = true;
 
+    # Define root settings
+    users.users.root = {
+	shell = pkgs.powershell;
+    };
+
     # Define a user account and its settings
     users.users.nixos = {
 	isNormalUser = true;
@@ -131,11 +164,23 @@
 
     # List packages installed in system profile. To search, run:
     environment = {
+	# Define the system shell
+	shells = with pkgs; [ powershell ];
+
+	# Default Applications
+	variables = {
+	    EDITOR = "nvim";
+	    VISUAL = "nvim";
+	    BROWSER = "/run/current-system/sw/bin/chromium";
+	};
+
 	systemPackages = with pkgs; [
 	    OVMF
 	    audacity
+	    brightnessctl
 	    dolphin
 	    discord
+	    discordo
 	    dwm
 	    firefox
 	    flameshot
@@ -144,6 +189,7 @@
 	    git
 	    go
 	    gost
+	    gucharmap
 	    icu
 	    libreoffice
 	    mpv
@@ -164,9 +210,11 @@
 	    ungoogled-chromium
 	    virt-manager
 	    vlc
-	    xfce.mousepad
 	    xclip
+	    xdotool
+	    xfce.mousepad
 	    xorg.xsetroot
+	    xprintidle
 	    xwinwrap
 
 	    # Python packages
@@ -188,13 +236,6 @@
 	    clang-tools
 	    pkg-config
 	];
-
-	# Default Applications
-	variables = {
-	    EDITOR = "nvim";
-	    VISUAL = "nvim";
-	    BROWSER = "/run/current-system/sw/bin/chromium";
-	};
     };
 
     # Default applications for specific file types

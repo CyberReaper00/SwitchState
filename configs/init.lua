@@ -114,7 +114,7 @@ nmap("<leader>q", ":q<CR>")
 nmap("<leader>r", ":source %<CR>")
 nmap("<leader>l", ":Lazy<CR>")
 nmap("<leader>e", '"+yiw')
-nmap("<leader>p", 'viw"+gP')
+nmap("<leader>p", 'viw"+p')
 nmap("<leader>v", "<C-v>")
 nmap("<leader>j", "<C-^>")
 nmap("<leader>i", "gt")
@@ -153,10 +153,13 @@ nmap("d", '"+d')
 nmap("s", '"+s')
 nmap("U", "<C-r>")
 nmap("dH", "d^")
-nmap("x", "X")
-nmap("X", "x")
 vim.keymap.set("i", "<M-B>", "<C-w>")
 vim.keymap.set("i", "<M-b>", "<BS>")
+vim.keymap.set("t", "<M-B>", "<C-w>")
+vim.keymap.set("t", "<M-b>", "<BS>")
+vim.keymap.set("t", "<M-b>", "<BS>")
+vim.keymap.set("i", "<C-v>", "<C-r>+")
+nmap("p", '"+p')
 
 --=== Searching remaps ===
 nmap("<Esc>", ":noh<CR>")
@@ -165,8 +168,8 @@ nmap('"', "%")
 wait_map("f")
 wait_map("F")
 
---=== LaTeX Config ===
+--=== Something to try out ===
 vim.cmd([[
-    " Automatic block insertion
+
 ]])
 
