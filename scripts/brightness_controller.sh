@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-idle=$(( 300 * 1000 ))
+idle=$(( 1000000 * 1000 ))
 br_low="10%"
 br_high="100%"
 state="normal"
 
-exclude_classes=("vlc" "youtube")
+exclude_classes=("vlc" "chromium --profile-directory=Default --app-id=agimnkijcaahngcdmfeangaknmldooml")
 
 get_focused() {
     win_id=$(xdotool getwindowfocus)

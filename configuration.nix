@@ -178,6 +178,7 @@
 	    OVMF
 	    audacity
 	    brightnessctl
+	    btop
 	    dolphin
 	    discord
 	    discordo
