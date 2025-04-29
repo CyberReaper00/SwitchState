@@ -89,46 +89,47 @@
     # https://github.com/ollama/ollama/archive/refs/tags/v0.6.5.tar.gz;
 
     # Enable the X11 windowing system
-    services.xserver = {
-	enable = true;
-	windowManager = {
-	    dwm = {
-		enable = true;
+    services = {
+	xserver = {
+	    enable = true;
+	    windowManager = {
+		dwm = {
+		    enable = true;
+		};
+	    };
+	    displayManager = {
+		lightdm = {
+		    enable = true;
+		};
+	    };
+	    desktopManager = {
+		lxqt = {
+		    enable = true;
+		};
+	    };
+
+	    # Configure keymap in X11
+	    xkb = {
+		layout = "us";
+		options = "caps:escape";
 	    };
 	};
-	displayManager = {
-	    lightdm = {
-		enable = true;
-	    };
-	};
-	desktopManager = {
-	    lxqt = {
-		enable = true;
-	    };
-	};
 
-    # Configure keymap in X11
-	xkb = {
-	    layout = "us";
-	    options = "caps:escape";
+	# Enable CUPS to print documents.
+	printing.enable = true;
+
+	# Enable sound.
+	pipewire = {
+	    enable = true;
+	    pulse.enable = true;
 	};
 
-    };
-
-    # Enable CUPS to print documents.
-    services.printing.enable = true;
-
-    # Enable sound.
-    services.pipewire = {
-	enable = true;
-	pulse.enable = true;
+	# Enable touchpad support (enabled default in most desktopManagers)
+	libinput.enable = true;
     };
 
     # Enable audio settings
     hardware.pulseaudio.enable = false;
-
-    # Enable touchpad support (enabled default in most desktopManager).
-    services.libinput.enable = true;
 
     # Define root settings
     users.users.root = {
@@ -162,6 +163,9 @@
 	];
     };
 
+    # Virtual Console font
+    console.font = "solar24x32";
+
     # List packages installed in system profile. To search, run:
     environment = {
 	# Define the system shell
@@ -179,10 +183,12 @@
 	    audacity
 	    brightnessctl
 	    btop
+	    copyq
 	    dolphin
 	    discord
 	    discordo
 	    dwm
+	    fd
 	    firefox
 	    flameshot
 	    gh
@@ -211,8 +217,8 @@
 	    ungoogled-chromium
 	    virt-manager
 	    vlc
-	    xclip
 	    xdotool
+	    xclip
 	    xfce.mousepad
 	    xorg.xsetroot
 	    xprintidle

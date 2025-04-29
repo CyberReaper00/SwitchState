@@ -29,12 +29,14 @@ chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps
 
 # Xsetroot
 ln -sf /home/nixos/nixos/scripts/xsession /home/nixos/.xsession
-ln -sf /home/nixos/nixos/scripts/dwm_status.sh /home/nixos/.dwm_status.sh
-ln -sf /home/nixos/nixos/scripts/brightness_controller.sh /home/nixos/.brightness_controller.sh
+ln -sf /home/nixos/nixos/scripts/sysinfo.ps1 /home/nixos/.sysinfo.ps1
+ln -sf /home/nixos/nixos/scripts/brightness_controller.ps1 /home/nixos/.brightness_controller.ps1
+ln -sf /home/nixos/nixos/scripts/remaps.xkb /home/nixos/remaps.xkb
 chown nixos:users \
 /home/nixos/.xsession \
-/home/nixos/.dwm_status.sh \
-/home/nixos/.brightness_controller.sh
+/home/nixos/.sysinfo.ps1 \
+/home/nixos/.brightness_controller.ps1 \
+/home/nixos/remaps.xkb
 
 # Custom .desktop files
 mkdir -p /home/nixos/.local/share/applications/

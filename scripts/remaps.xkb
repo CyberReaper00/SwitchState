@@ -1,0 +1,17 @@
+xkb_keymap {
+    xkb_keycodes  { include "evdev+aliases(qwerty)" };
+    xkb_types     { include "complete" };
+    xkb_compat    { include "complete" };
+    xkb_symbols   { include "pc+us" };
+
+    key <AB05> {
+	type= "ALPHABETIC",
+	modifiers= Mod1,
+	symbols[Group1] = [ BackSpace ]
+    };
+
+    key <AB05> { 
+        type= "ALT_SHIFT_COMBO", 
+        symbols[Group1] = [ b, B, NoSymbol, Control_BackSpace ]
+    };
+}; 

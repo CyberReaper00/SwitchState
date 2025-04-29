@@ -1,8 +1,12 @@
 # Start system info bar
-~/.dwm_status.sh &
+pwsh /home/nixos/.sysinfo.ps1 &
 
 # Automatic screen dimmer
-~/.brightness_controller.sh &
+pwsh /home/nixos/.brightness_controller.ps1 &
+
+# Custom mappings
+setxkbmap -layout us
+xkbcomp /home/nixos/remaps.xkb $DISPLAY
 
 # Start DWM
 exec dwm
