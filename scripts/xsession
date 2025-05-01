@@ -1,12 +1,12 @@
-# Start system info bar
+# System info for top bar
 pwsh /home/nixos/.sysinfo.ps1 &
 
 # Automatic screen dimmer
 pwsh /home/nixos/.brightness_controller.ps1 &
 
-# Custom mappings
-setxkbmap -layout us
-xkbcomp /home/nixos/remaps.xkb $DISPLAY
+# Powershell user checker
+#sudo rm /tmp/sdf
+#xsetroot -name 'deleted'
 
 # Start DWM
 exec dwm

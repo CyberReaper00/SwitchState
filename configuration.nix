@@ -115,10 +115,10 @@
 	    };
 	};
 
-	# Enable CUPS to print documents.
+	# Enable CUPS to print documents
 	printing.enable = true;
 
-	# Enable sound.
+	# Enable sound
 	pipewire = {
 	    enable = true;
 	    pulse.enable = true;

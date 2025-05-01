@@ -27,16 +27,11 @@ mkdir -p /home/nixos/.config/powershell
 ln -sf /home/nixos/nixos/configs/pwsh-config/Microsoft.PowerShell_profile.ps1 /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
 chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
 
-# Xsetroot
-ln -sf /home/nixos/nixos/scripts/xsession /home/nixos/.xsession
-ln -sf /home/nixos/nixos/scripts/sysinfo.ps1 /home/nixos/.sysinfo.ps1
-ln -sf /home/nixos/nixos/scripts/brightness_controller.ps1 /home/nixos/.brightness_controller.ps1
-ln -sf /home/nixos/nixos/scripts/remaps.xkb /home/nixos/remaps.xkb
-chown nixos:users \
-/home/nixos/.xsession \
-/home/nixos/.sysinfo.ps1 \
-/home/nixos/.brightness_controller.ps1 \
-/home/nixos/remaps.xkb
+# Xsetroot Scripts
+install -m 755 -o nixos -g users /home/nixos/nixos/scripts/xsession /home/nixos/.xsession
+install -m 755 -o nixos -g users /home/nixos/nixos/scripts/startup.sh /home/nixos/.startup.sh
+install -m 755 -o nixos -g users /home/nixos/nixos/scripts/sysinfo.ps1 /home/nixos/.sysinfo.ps1
+install -m 755 -o nixos -g users /home/nixos/nixos/scripts/brightness_controller.ps1 /home/nixos/.brightness_controller.ps1
 
 # Custom .desktop files
 mkdir -p /home/nixos/.local/share/applications/

@@ -3,11 +3,10 @@ xset -dpms
 xset s noblank
 
 while ($true) {
-    try {
-	$wifi = (nmcli -t -f active,ssid dev wifi | grep '^yes' | ForEach-Object {
-		    ($_ -split ':')[1]
-		})
-    } catch {
+    $wifi = (nmcli -t -f active,ssid dev wifi | grep '^yes' | ForEach-Object {
+		($_ -split ':')[1]
+	    })
+    if ($wifi -eq $null) {
 	$wifi = "N\A"
     }
 
@@ -20,9 +19,8 @@ while ($true) {
 	$date = "N\A"
         $time = "N\A"
     }
-    
-    $status = "  [ WIFI ( $wifi ) ][ DATE-TIME ( $day | $date | $time ) ] "
-    Write-Host "STATUS:`n$status"
+
+    $status = "  ╠═══╣ $wifi ╠═╣ $day ▊ $date ▊ $time ╠═══╣ "
     xsetroot -name $status
 
     Start-Sleep -Seconds 1

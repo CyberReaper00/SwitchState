@@ -1,22 +1,51 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 6;  /* border pixel of windows */
-static const unsigned int snap      = 32; /* snap pixel */
-static const int showbar            = 1;  /* 0 means no bar */
-static const int topbar             = 1;  /* 0 means bottom bar */
-static const char *fonts[]          = { "Liberation Mono:bold:size=14" };
-static const char dmenufont[]       = "Liberation Mono:bold:size=14";
-static const char col_gray1[]       = "#0B123F"; /* status bar background */
-static const char col_gray2[]       = "#0B123F"; /* inactive window */
-static const char col_gray3[]       = "#FFFFFF"; /* unselected status bar font color */
-static const char col_gray4[]       = "#FFFFFF"; /* window name font color */
-static const char col_cyan[]        = "#008080"; /* selected items and window */
-static const char *colors[][3]      = {
-	/*               fg         bg  /       border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+static const unsigned int borderpx	= 6;  /* border pixel of windows */
+static const unsigned int snap		= 32; /* snap pixel */
+static const int showbar		= 1;  /* 0 means no bar */
+static const int topbar			= 1;  /* 0 means bottom bar */
+static const char *fonts[]		= { "Liberation Mono:bold:size=14" };
+static const char dmenufont[]		= "Liberation Mono:bold:size=14";
+static const char col1[]		= "#FFFFFF";
+static const char col2[]		= "#0E1C4A";
+static const char col3[]		= "#3E54BD";
+
+static const char *blue[] = {
+    "#FFFFFF", "#0E1C4A", "#3E54BD"
 };
+
+static const char **current_theme = blue;
+/*
+static const char *colors[][3]		= {
+
+	[SchemeNorm] = {
+	    col1, // text color for unselected objects in bar
+	    col2, // bg color for unselected objects in bar
+	    col3  // border color for unfocused window
+	},
+
+	[SchemeSel]  = {
+	    col1, // text color for selected objects in bar
+	    col3, // bg color for selected objects in bar
+	    col2  // border color for focused window
+	},
+};
+*/
+
+//red - conv_hex "#50241d #240200 #400905 #340b07 #73493d"
+//green - conv_hex "#1A2C12 #020C02 #193A0D #385C17 #1B331D"
+//blue - conv_hex "#1E3070 #3E54BD #6C76CB #0E1C4A #282D6E"
+
+/*
+static char *red[] = {
+    "#50241d", "#240200", "#400905", "#340b07", "#73493d"
+};
+
+static char *green[] = {
+    "#1A2C12", "#020C02", "#193A0D", "#385C17", "#1B331D"
+};
+*/
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -53,9 +82,9 @@ static const int lockfullscreen = 1; 	/* 1 will force focus on the fullscreen wi
 
 static const Layout layouts[] = {
 	/* symbol	arrange function */
-	{ "[T]",	tile },    /* first entry is default */
+	{ "[M]",	monocle }, /* first entry is default */
+	{ "[T]",	tile },
 	{ "[F]",	NULL },    /* no layout function means floating behavior */
-	{ "[M]",	monocle },
 };
 
 /* key definitions */
@@ -65,10 +94,10 @@ static const Layout layouts[] = {
 #define SUPER	Mod4Mask
 
 #define TAGKEYS(KEY,TAG) \
-	{ SUPER,		KEY,      view,           {.ui = 1 << TAG} }, \
-	{ SUPER|CTRL,		KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ SUPER|SHIFT,		KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ SUPER|CTRL|SHIFT, 	KEY,      toggletag,      {.ui = 1 << TAG} },
+	{ ALT,			KEY,      view,           {.ui = 1 << TAG} }, \
+	{ ALT|CTRL,		KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ ALT|SHIFT,		KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ ALT|CTRL|SHIFT, 	KEY,      toggletag,      {.ui = 1 << TAG} },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -77,24 +106,30 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[]	= { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]	= { "sudo", "neovide", NULL };
+static const char *scrshot[]	= { "flameshot", "gui", NULL };
+static const char *browser[]	= { "chromium", NULL };
+static const char *win_setup[]	= { "/home/nixos/.startup.sh", NULL };
 
 static const Key keys[] = {
 	/* modifier			key		function        argument */
 	{ ALT,				XK_space,	spawn,          {.v = dmenucmd } },
-	{ SUPER|SHIFT,			XK_Return,	spawn,          {.v = termcmd } },
+	{ ALT,				XK_n,		spawn,          {.v = termcmd } },
+	{ ALT,				XK_s,		spawn,          {.v = scrshot } },
+	{ ALT|CTRL,			XK_b,		spawn,          {.v = browser } },
+	{ ALT|SHIFT,			XK_p,		spawn,          {.v = win_setup } },
 	{ SUPER,			XK_b,		togglebar,      {0} },
-	{ ALT,				XK_Tab,		focusstack,     {.i = +1 } },
+	{ ALT,				XK_a,		focusstack,     {.i = +1 } },
 	{ SUPER,			XK_d,		focusstack,     {.i = -1 } },
 	{ SUPER,			XK_i,		incnmaster,     {.i = +1 } },
 	{ SUPER,			XK_j,		incnmaster,     {.i = -1 } },
 	{ SUPER,			XK_h,		setmfact,       {.f = -0.05} },
 	{ SUPER,			XK_l,		setmfact,       {.f = +0.05} },
 	{ SUPER,			XK_Return,	zoom,           {0} },
-	{ ALT,				XK_a,		view,           {0} },
+	{ ALT,				XK_Tab,		view,           {0} },
 	{ SUPER,			XK_w,		killclient,     {0} },
-	{ SUPER,			XK_t,		setlayout,      {.v = &layouts[0]} },
-	{ SUPER,			XK_f,		setlayout,      {.v = &layouts[1]} },
-	{ SUPER,			XK_m,		setlayout,      {.v = &layouts[2]} },
+	{ SUPER,			XK_m,		setlayout,      {.v = &layouts[0]} },
+	{ SUPER,			XK_t,		setlayout,      {.v = &layouts[1]} },
+	{ SUPER,			XK_f,		setlayout,      {.v = &layouts[2]} },
 	{ SUPER,			XK_space,	setlayout,      {0} },
 	{ SUPER|SHIFT,			XK_space,	togglefloating, {0} },
 	{ SUPER,			XK_0,		view,           {.ui = ~0 } },

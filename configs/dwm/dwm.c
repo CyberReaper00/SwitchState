@@ -270,6 +270,20 @@ static Window root, wmcheckwin;
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
+extern const char **current_theme;
+const char *colors[2][3];
+
+void
+update_colors(void) {
+    colors[SchemeNorm][0] = (char *)current_theme[0];
+    colors[SchemeNorm][1] = (char *)current_theme[1];
+    colors[SchemeNorm][2] = (char *)current_theme[2];
+
+    colors[SchemeSel][0] = (char *)current_theme[0];
+    colors[SchemeSel][1] = (char *)current_theme[2];
+    colors[SchemeSel][2] = (char *)current_theme[1];
+}
+
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
@@ -2139,8 +2153,10 @@ zoom(const Arg *arg)
 	pop(c);
 }
 
+
 int
 main(int argc, char *argv[])
+
 {
 	if (argc == 2 && !strcmp("-v", argv[1]))
 		die("dwm-"VERSION);
@@ -2151,6 +2167,7 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
 	checkotherwm();
+	update_colors();
 	setup();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
