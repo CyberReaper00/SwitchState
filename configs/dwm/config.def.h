@@ -7,12 +7,20 @@ static const int showbar		= 1;  /* 0 means no bar */
 static const int topbar			= 1;  /* 0 means bottom bar */
 static const char *fonts[]		= { "Liberation Mono:bold:size=14" };
 static const char dmenufont[]		= "Liberation Mono:bold:size=14";
-static const char col1[]		= "#FFFFFF";
-static const char col2[]		= "#0E1C4A";
-static const char col3[]		= "#3E54BD";
+/*
+ * static const char col1[]		= "#FFFFFF";
+ * static const char col2[]		= "#0E1C4A";
+ * static const char col3[]		= "#3E54BD";
+ */
 
 static const char *blue[] = {
-    "#FFFFFF", "#0E1C4A", "#3E54BD"
+// 	text		dark		light
+	"#FFFFFF", 	"#0E1C4A", 	"#3E54BD"
+};
+
+static const char *red[] = {
+// 	text		dark		light
+	"#FFFFFF", 	"#430B07", 	"#73493D"
 };
 
 static const char **current_theme = blue;
@@ -38,11 +46,7 @@ static const char *colors[][3]		= {
 //blue - conv_hex "#1E3070 #3E54BD #6C76CB #0E1C4A #282D6E"
 
 /*
-static char *red[] = {
-    "#50241d", "#240200", "#400905", "#340b07", "#73493d"
-};
-
-static char *green[] = {
+static const char *green[] = {
     "#1A2C12", "#020C02", "#193A0D", "#385C17", "#1B331D"
 };
 */

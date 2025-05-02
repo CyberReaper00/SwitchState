@@ -36,6 +36,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
+#include <pthread.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
@@ -273,6 +274,7 @@ static Window root, wmcheckwin;
 extern const char **current_theme;
 const char *colors[2][3];
 
+
 void
 update_colors(void) {
     colors[SchemeNorm][0] = (char *)current_theme[0];
@@ -281,7 +283,35 @@ update_colors(void) {
 
     colors[SchemeSel][0] = (char *)current_theme[0];
     colors[SchemeSel][1] = (char *)current_theme[2];
-    colors[SchemeSel][2] = (char *)current_theme[1];
+    colors[SchemeSel][2] = (char *)current_theme[2];
+}
+
+void
+check_theme(Display *dpy) {
+    char *name = NULL;
+    Window root = DefaultRootWindow(dpy);
+
+    if (XFetchName(dpy, root, &name)) {
+	if (name && strstr(name, "change")) {
+	    current_theme = red;
+	    update_colors();
+	}
+	XFree(name);
+    }
+}
+
+void *
+theme_checker(void *arg) {
+    Display *dpy_thread = XOpenDisplay(NULL);
+    if (!dpy_thread) return NULL;
+
+    for (;;) {
+	check_theme(dpy_thread);
+	usleep(100000);
+    }
+
+    XCloseDisplay(dpy_thread);
+    return NULL;
 }
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
@@ -2174,6 +2204,8 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
+	pthread_t theme_thread;
+	pthread_create(&theme_thread, NULL, theme_checker, NULL);
 	run();
 	cleanup();
 	XCloseDisplay(dpy);

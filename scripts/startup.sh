@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-neovide &
+sudo neovide &
 chromium &
 chromium --profile-directory=Default --app-id=dgommhjhffiieicepokilddfojhkfnag &
