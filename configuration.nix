@@ -208,6 +208,7 @@
 	    pamixer
 	    pavucontrol
 	    powershell
+	    pulseaudio
 	    pureref
 	    qemu
 	    rofi

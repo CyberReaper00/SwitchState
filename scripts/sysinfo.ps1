@@ -23,5 +23,5 @@ while ($true) {
     $status = "  ╠═══╣ $wifi ╠═╣ $day ▊ $date ▊ $time ╠═══╣ "
     xsetroot -name $status
 
-    Start-Sleep -Seconds 1
+    Start-Sleep -Milliseconds 400
 } 

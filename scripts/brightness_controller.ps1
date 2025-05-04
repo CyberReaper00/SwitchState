@@ -52,7 +52,11 @@ while ($true) {
 	$state = "normal"
     }
 
-    Start-Sleep -Milliseconds 100
+    if ($state -eq "normal") {
+        Start-Sleep -Seconds 10
+    } elseif ($state -eq "dimmed") {
+        Start-Sleep -Milliseconds 100
+    }
 
     if (-not (is_connected)) {
         xsetroot -name "[          NOT CHARGING          ]"
