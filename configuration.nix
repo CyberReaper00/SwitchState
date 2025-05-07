@@ -8,7 +8,24 @@
     imports =
 	[   # Include the results of the hardware scan.
 	    ./hardware-configuration.nix
+	    <home-manager/nixos>
 	];
+
+    home-manager = {
+	useGlobalPkgs = true;
+	useUserPackages = true;
+	users.nixos = {
+	    programs = {
+		home-manager.enable = true;
+		neovim = {
+		    enable = true;
+		    configure = {
+			customRC = builtins.readFile ./configs/nvim-config/init.lua;
+		    };
+		};
+	    };
+	};
+    };
 
     nixpkgs.config = {
 	allowUnfree = true;
@@ -33,6 +50,38 @@
 	};
     };
 
+    # Define root settings
+    users.users.root = {
+	shell = pkgs.powershell;
+    };
+
+    # Define a user account and its settings
+    users.users.nixos = {
+	isNormalUser = true;
+	extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" ];
+	packages = with pkgs; [
+	    tree
+	];
+	shell = pkgs.powershell;
+    };
+
+    # Default applications for specific file types
+    xdg.portal.enable = true;
+    xdg.mime.defaultApplications = {
+	"text/plain" = "org.xfce.mousepad.desktop";
+	"application/pdf" = "chromium.desktop";
+	"image/png" = "pureref.desktop";
+    };
+
+    # Define program specific settings
+    programs = {
+	chromium = {
+	    enable = true;
+	    defaultSearchProviderEnabled = true;
+	    defaultSearchProviderSearchURL = "https://sybil.com/search?q={searchTerms}";
+	};
+    };
+
     # Use the systemd-boot EFI boot loader.
     boot = {
 	loader = {
@@ -52,7 +101,6 @@
 	    enable = true;
 	};
     };
-
 
     # Set your time zone.
     time.timeZone = "Asia/Karachi";
@@ -110,8 +158,16 @@
 
 	    # Configure keymap in X11
 	    xkb = {
-		layout = "us";
-		options = "caps:escape";
+	        options = "caps:escape";
+	    #	 layout = lib.mkForce "custom";
+	    #    model = "";
+	    #    extraLayouts = {
+	    #        custom = {
+	    #    	description = "New BS";
+	    #    	languages = [ "eng" ];
+	    #    	symbolsFile = /etc/xkb/symbols/custom;
+	    #        };
+	    #    };
 	    };
 	};
 
@@ -131,29 +187,6 @@
     # Enable audio settings
     hardware.pulseaudio.enable = false;
 
-    # Define root settings
-    users.users.root = {
-	shell = pkgs.powershell;
-    };
-
-    # Define a user account and its settings
-    users.users.nixos = {
-	isNormalUser = true;
-	extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" ];
-	packages = with pkgs; [
-	    tree
-	];
-	shell = pkgs.powershell;
-    };
-
-    # Define program specific settings
-    programs = {
-	chromium = {
-	    enable = true;
-	    defaultSearchProviderEnabled = true;
-	    defaultSearchProviderSearchURL = "https://sybil.com/search?q={searchTerms}";
-	};
-    };
 
     # System font
     fonts = {
@@ -176,6 +209,7 @@
 	    EDITOR = "nvim";
 	    VISUAL = "nvim";
 	    BROWSER = "/run/current-system/sw/bin/chromium";
+	    TERMINAL = "ghostty";
 	};
 
 	systemPackages = with pkgs; [
@@ -197,11 +231,11 @@
 	    go
 	    gost
 	    gucharmap
+	    home-manager
 	    icu
 	    libreoffice
 	    mpv
 	    neovim
-	    neovide
 	    nodejs_23
 	    obsidian
 	    ollama
@@ -228,30 +262,22 @@
 	    # Python packages
 	    python312Full
 	    python312Packages.pip
+	    python312Packages.tzdata
 	    python312Packages.nuitka
 	    python312Packages.xxhash
+	    python312Packages.aiohttp
 	    python312Packages.datetime
 	    python312Packages.openpyxl
-	    python312Packages.discordpy
 	    python312Packages.requests
-	    python312Packages.aiohttp
 	    python312Packages.openpyxl
-	    python312Packages.tzdata
+	    python312Packages.discordpy
 
 	    # C Packages
 	    gcc
 	    gdb
-	    clang-tools
 	    pkg-config
+	    clang-tools
 	];
-    };
-
-    # Default applications for specific file types
-    xdg.portal.enable = true;
-    xdg.mime.defaultApplications = {
-	"text/plain" = "org.xfce.mousepad.desktop";
-	"application/pdf" = "chromium.desktop";
-	"image/png" = "pureref.desktop";
     };
 
     # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &

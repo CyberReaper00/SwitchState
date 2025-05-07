@@ -12,11 +12,6 @@ mkdir -p /root/.config/powershell
 ln -sf /home/nixos/nixos/configs/pwsh-config/Microsoft.PowerShell_profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
 # ===============> Configs for the nixos user
-# Nvim config
-mkdir -p /home/nixos/.config/nvim
-ln -sf /home/nixos/nixos/configs/nvim-config/init.lua /home/nixos/.config/nvim/init.lua
-chown nixos:users /home/nixos/.config/nvim/init.lua
-
 # Ghostty config
 mkdir -p /home/nixos/.config/ghostty
 ln -sf /home/nixos/nixos/configs/config /home/nixos/.config/ghostty/config
@@ -26,6 +21,11 @@ chown nixos:users /home/nixos/.config/ghostty/config
 mkdir -p /home/nixos/.config/powershell
 ln -sf /home/nixos/nixos/configs/pwsh-config/Microsoft.PowerShell_profile.ps1 /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
 chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
+
+# Powershell config
+mkdir -p /home/nixos/.config/rofi
+ln -sf /home/nixos/nixos/configs/config.rasi /home/nixos/.config/rofi/config.rasi
+chown nixos:users /home/nixos/.config/rofi/config.rasi
 
 # Xsetroot Scripts
 install -m 755 -o nixos -g users /home/nixos/nixos/scripts/xsession /home/nixos/.xsession
