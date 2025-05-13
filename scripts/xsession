@@ -1,6 +1,6 @@
 # Start audio controller
-export XDG_RUNTIME_DIR="/run/user/$(id -u)"
-systemctl --user start pipewire-pulse
+sh systemd --user &
+sh $env:XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
 # System info for top bar
 pwsh /home/nixos/.sysinfo.ps1 &

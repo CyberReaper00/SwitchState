@@ -6,7 +6,16 @@
     padding: 6;
 
     alt-border: #282D6E; // dark-border
-    sel-item: #6C76CB;
+    sel-item: #6C76CB; // light-color
+}
+
+configuration {
+    modes: [ drun, filebrowser, keys];
+}
+
+textbox {
+    text-color: @fg;
+    padding: 10px;
 }
 
 window {
@@ -29,10 +38,12 @@ inputbar {
 
 prompt {
     text-color: @fg;
+    placeholder: "ajsdlkasjd";
 }
 
 entry {
     text-color: @fg;
+    placeholder: "Search here...";
 }
 
 listview {

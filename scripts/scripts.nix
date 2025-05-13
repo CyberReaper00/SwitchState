@@ -1,7 +1,7 @@
 # ===============> Configs for the root user
 # Nvim config
-mkdir -p /root/.config/nvim
-ln -sf /home/nixos/nixos/configs/nvim-config/init.lua /root/.config/nvim/init.lua
+# mkdir -p /root/.config/nvim
+# ln -sf /home/nixos/nixos/configs/nvim-config/init.lua /root/.config/nvim/init.lua
 
 # Ghostty config
 mkdir -p /root/.config/ghostty
@@ -26,6 +26,10 @@ chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps
 mkdir -p /home/nixos/.config/rofi
 ln -sf /home/nixos/nixos/configs/config.rasi /home/nixos/.config/rofi/config.rasi
 chown nixos:users /home/nixos/.config/rofi/config.rasi
+
+# Mappings for media keys
+ln -sf /home/nixos/nixos/scripts/media_keys.sh /home/nixos/.media_keys.sh
+chown nixos:users /home/nixos/.media_keys.sh
 
 # Xsetroot Scripts
 install -m 755 -o nixos -g users /home/nixos/nixos/scripts/xsession /home/nixos/.xsession

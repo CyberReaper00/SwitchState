@@ -60,7 +60,7 @@ while ($true) {
 
     if (-not (is_connected)) {
         xsetroot -name "[          NOT CHARGING          ]"
-        Start-Sleep -Seconds 5
+        Start-Sleep -Milliseconds 500
         continue
     }
 }

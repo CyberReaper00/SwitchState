@@ -1,6 +1,6 @@
-    # Edit this configuration file to define what should be installed on
-    # your system. Help is available in the configuration.nix(5) man page, on
-    # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
+# Edit this configuration file to define what should be installed on
+# your system. Help is available in the configuration.nix(5) man page, on
+# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
 
@@ -8,24 +8,7 @@
     imports =
 	[   # Include the results of the hardware scan.
 	    ./hardware-configuration.nix
-	    <home-manager/nixos>
 	];
-
-    home-manager = {
-	useGlobalPkgs = true;
-	useUserPackages = true;
-	users.nixos = {
-	    programs = {
-		home-manager.enable = true;
-		neovim = {
-		    enable = true;
-		    configure = {
-			customRC = builtins.readFile ./configs/nvim-config/init.lua;
-		    };
-		};
-	    };
-	};
-    };
 
     nixpkgs.config = {
 	allowUnfree = true;
@@ -63,6 +46,7 @@
 	    tree
 	];
 	shell = pkgs.powershell;
+	linger = true;
     };
 
     # Default applications for specific file types
@@ -79,6 +63,12 @@
 	    enable = true;
 	    defaultSearchProviderEnabled = true;
 	    defaultSearchProviderSearchURL = "https://sybil.com/search?q={searchTerms}";
+	};
+	neovim = {
+	    enable = true;
+	    configure = {
+		customRC = builtins.readFile ./configs/nvim-config/init.lua;
+	    };
 	};
     };
 
@@ -234,8 +224,10 @@
 	    home-manager
 	    icu
 	    libreoffice
+	    kcalc
 	    mpv
 	    neovim
+	    neovide
 	    nodejs_23
 	    obsidian
 	    ollama
@@ -246,6 +238,7 @@
 	    pureref
 	    qemu
 	    rofi
+	    rofi-calc
 	    tmux
 	    tradingview
 	    tldr
@@ -290,6 +283,9 @@
 		users = [ "nixos" ];
 		commands = [{
 		    command = "/run/current-system/sw/bin/neovide";
+		    options = [ "SETENV" "NOPASSWD" ];
+		}{
+		    command = "/home/nixos/nixos/scripts/kill_all.sh";
 		    options = [ "SETENV" "NOPASSWD" ];
 		}];
 	    }

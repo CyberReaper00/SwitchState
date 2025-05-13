@@ -24,22 +24,6 @@ static const char *red[] = {
 };
 
 static const char **current_theme = blue;
-/*
-static const char *colors[][3]		= {
-
-	[SchemeNorm] = {
-	    col1, // text color for unselected objects in bar
-	    col2, // bg color for unselected objects in bar
-	    col3  // border color for unfocused window
-	},
-
-	[SchemeSel]  = {
-	    col1, // text color for selected objects in bar
-	    col3, // bg color for selected objects in bar
-	    col2  // border color for focused window
-	},
-};
-*/
 
 //red - conv_hex "#50241d #240200 #400905 #340b07 #73493d"
 //green - conv_hex "#1A2C12 #020C02 #193A0D #385C17 #1B331D"
@@ -114,6 +98,11 @@ static const char *scrshot[]	= { "flameshot", "gui", NULL };
 static const char *browser[]	= { "chromium", NULL };
 static const char *win_setup[]	= { "/home/nixos/.startup.sh", NULL };
 
+// Media keys
+static const char *vol_up[]	= { "/home/nixos/.media_keys.sh up", NULL };
+static const char *vol_down[]	= { "/home/nixos/.media_keys.sh down", NULL };
+static const char *mute[]	= { "/home/nixos/.media_keys.sh mute", NULL };
+
 static const Key keys[] = {
 	/* modifier			key		function        argument */
 	{ ALT,				XK_space,	spawn,          {.v = dmenucmd } },
@@ -142,6 +131,18 @@ static const Key keys[] = {
 	{ SUPER,			XK_period,	focusmon,       {.i = +1 } },
 	{ SUPER|SHIFT,			XK_comma,	tagmon,         {.i = -1 } },
 	{ SUPER|SHIFT,			XK_period,	tagmon,         {.i = +1 } },
+
+	// Media keys
+	{ 0,				XF86XK_AudioRaiseVolume,	spawn,         {.v = vol_up} },
+	{ 0,				XF86XK_AudioLowerVolume,	spawn,         {.v = vol_down} },
+	{ 0,				XF86XK_AudioMute,		spawn,         {.v = mute} },
+	/*
+	{ 0,				XK_8,		spawn,         {.v = vol_up} },
+	{ 0,				XK_9,		spawn,         {.v = vol_down} },
+	{ 0,				XK_0,		spawn,         {.v = mute} },
+	*/
+
+	// Tag Keys
 	TAGKEYS(			XK_1,		0)
 	TAGKEYS(			XK_2,		1)
 	TAGKEYS(			XK_3,		2)
