@@ -1,5 +1,5 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
+# Edit this configuration file to define what should be installed on your system.
+# Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
@@ -28,33 +28,54 @@
     };
 
     system.activationScripts = {
-	user-configs = {
+
+	user-config = {
 	    text = builtins.readFile ./scripts/scripts.nix;
 	};
     };
 
-    # Define root settings
-    users.users.root = {
-	shell = pkgs.powershell;
+    # Define a user account and its settings
+    users = {
+	defaultUserShell = pkgs.powershell;
+
+	users = {
+	    # Define root settings
+	    root = {
+		shell = pkgs.powershell;
+	    };
+
+	    # Define nixos-user settings
+	    nixos = {
+		isNormalUser = true;
+		extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" "lp"];
+		useDefaultShell = true;
+		linger = true;
+	    };
+	};
     };
 
-    # Define a user account and its settings
-    users.users.nixos = {
-	isNormalUser = true;
-	extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" ];
-	packages = with pkgs; [
-	    tree
-	];
-	shell = pkgs.powershell;
-	linger = true;
+    /*
+    containers.cont1 = {
+	autoStart = true;
+	privateNetwork = true;
+	localAddress = "10.233.0.1";
+
+	config = { config, pkgs, ... }: {
+	    networking.hostName = "cont1";
+	    environment.systemPackages = with pkgs; [ nvim ];
+	};
     };
+    */
 
     # Default applications for specific file types
     xdg.portal.enable = true;
     xdg.mime.defaultApplications = {
-	"text/plain" = "org.xfce.mousepad.desktop";
-	"application/pdf" = "chromium.desktop";
-	"image/png" = "pureref.desktop";
+	"text/plain"		= "org.xfce.mousepad.desktop";
+	"application/pdf"	= "chromium.desktop";
+	"image/png"		= "pureref.desktop";
+	"image/jpg"		= "pureref.desktop";
+	"image/jpeg"		= "pureref.desktop";
+	"image/gif"		= "pureref.desktop";
     };
 
     # Define program specific settings
@@ -64,11 +85,13 @@
 	    defaultSearchProviderEnabled = true;
 	    defaultSearchProviderSearchURL = "https://sybil.com/search?q={searchTerms}";
 	};
-	neovim = {
+	nix-ld = {
 	    enable = true;
-	    configure = {
-		customRC = builtins.readFile ./configs/nvim-config/init.lua;
-	    };
+	    libraries = with pkgs; [
+		glibc
+		zlib
+		openssl
+	    ];
 	};
     };
 
@@ -97,37 +120,47 @@
 
     # Extract dwm confg information from its source folder
     nixpkgs.overlays = [
+
 	(final: prev: {
 		dwm = prev.dwm.overrideAttrs (old: {
 		src = ./configs/dwm;
 	    });
 	})
 
-	# (final: prev: let
-	#     unstable = import <nixpkgs-unstable> { };
-	# in {
-	#     ollama = prev.ollama.overrideAttrs (oldAttrs: rec {
-	# 	src = prev.fetchFromGitHub {
-	# 	    owner = "ollama";
-	# 	    repo = "ollama";
-	# 	    rev = "v0.6.5";
-	# 	    sha256 = "sha256-l+JYQjl6A0fKONxtgCtc0ztT18rmArGKcO2o+p4H95M=";
-	#     };
-	# 
-	# 	buildPhase = ''
-	# 	    export GOFLAGS=-mod=mod
-	# 	    ${oldAttrs.buildPhase or "go build"}
-	# 	'';
-	# 	nativeBuildInputs = [ unstable.go_1_24 ];
-	# 	patches = [];
-	#     });
-	# })
+	(final: prev: {
+		slock = prev.dwm.overrideAttrs (old: {
+		src = ./configs/slock;
+	    });
+	})
+
+	/*
+	(final: prev: let
+	    unstable = import <nixpkgs-unstable> { };
+	in {
+	    ollama = prev.ollama.overrideAttrs (oldAttrs: rec {
+		src = prev.fetchFromGitHub {
+		    owner = "ollama";
+		    repo = "ollama";
+		    rev = "v0.6.5";
+		    sha256 = "sha256-l+JYQjl6A0fKONxtgCtc0ztT18rmArGKcO2o+p4H95M=";
+	    };
+	
+		buildPhase = ''
+		    export GOFLAGS=-mod=mod
+		    ${oldAttrs.buildPhase or "go build"}
+		'';
+		nativeBuildInputs = [ unstable.go_1_24 ];
+		patches = [];
+	    });
+	})
+	*/
     ];
     # buildInputs = (oldAttrs.buildInputs or []) ++ [ prev.go_1_24 ];
     # https://github.com/ollama/ollama/archive/refs/tags/v0.6.5.tar.gz;
 
     # Enable the X11 windowing system
     services = {
+	# Xserver Settings
 	xserver = {
 	    enable = true;
 	    windowManager = {
@@ -169,14 +202,11 @@
 	    enable = true;
 	    pulse.enable = true;
 	};
+	pulseaudio.enable = false;
 
 	# Enable touchpad support (enabled default in most desktopManagers)
 	libinput.enable = true;
     };
-
-    # Enable audio settings
-    hardware.pulseaudio.enable = false;
-
 
     # System font
     fonts = {
@@ -186,31 +216,30 @@
 	];
     };
 
-    # Virtual Console font
+    # TTY font
     console.font = "solar24x32";
 
     # List packages installed in system profile. To search, run:
     environment = {
-	# Define the system shell
-	shells = with pkgs; [ powershell ];
-
 	# Default Applications
 	variables = {
-	    EDITOR = "nvim";
-	    VISUAL = "nvim";
-	    BROWSER = "/run/current-system/sw/bin/chromium";
-	    TERMINAL = "ghostty";
+	    EDITOR	= "${pkgs.neovim}/bin/nvim";
+	    VISUAL	= "${pkgs.neovim}/bin/nvim";
+	    BROWSER	= "${pkgs.chromium}/bin/chromium";
+	    TERMINAL	= "${pkgs.ghostty}/bin/ghostty";
+	    NIXPKGS_ALLOW_UNFREE = "1";
 	};
 
 	systemPackages = with pkgs; [
+	    _20kly
 	    OVMF
+	    abuse
 	    audacity
 	    brightnessctl
 	    btop
 	    copyq
-	    dolphin
+	    kdePackages.dolphin
 	    discord
-	    discordo
 	    dwm
 	    fd
 	    firefox
@@ -220,15 +249,17 @@
 	    git
 	    go
 	    gost
+	    gpick
 	    gucharmap
 	    home-manager
 	    icu
 	    libreoffice
-	    kcalc
+	    kdePackages.kcalc
 	    mpv
 	    neovim
 	    neovide
-	    nodejs_23
+	    nodePackages.nodejs
+	    ntfs3g
 	    obsidian
 	    ollama
 	    pamixer
@@ -236,13 +267,19 @@
 	    powershell
 	    pulseaudio
 	    pureref
+	    qbittorrent-enhanced
 	    qemu
 	    rofi
 	    rofi-calc
+	    slock
+	    slstatus
 	    tmux
+	    tree
 	    tradingview
 	    tldr
+	    tor-browser
 	    ungoogled-chromium
+	    unzip
 	    virt-manager
 	    vlc
 	    xdotool
@@ -251,6 +288,7 @@
 	    xorg.xsetroot
 	    xprintidle
 	    xwinwrap
+	    zaz
 
 	    # Python packages
 	    python312Full
@@ -275,21 +313,32 @@
 
     # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
 
-    security.sudo = {
-	enable = true;
-	wheelNeedsPassword = false;
-	extraRules = [
-	    {
-		users = [ "nixos" ];
-		commands = [{
-		    command = "/run/current-system/sw/bin/neovide";
-		    options = [ "SETENV" "NOPASSWD" ];
-		}{
-		    command = "/home/nixos/nixos/scripts/kill_all.sh";
-		    options = [ "SETENV" "NOPASSWD" ];
-		}];
-	    }
-	];
+    security = {
+	sudo = {
+	    enable = true;
+	    wheelNeedsPassword = false;
+	    extraRules = [
+		{
+		    users = [ "nixos" ];
+		    commands = [{
+			command = "/run/current-system/sw/bin/neovide";
+			options = [ "SETENV" "NOPASSWD" ];
+		    }{
+			command = "/home/nixos/nixos/scripts/kill_all.sh";
+			options = [ "SETENV" "NOPASSWD" ];
+		    }];
+		}
+	    ];
+	};
+	
+	wrappers = {
+	    slock = {
+	       owner = "root";
+	       group = "root";
+	       setuid = true;
+	       source = "${pkgs.slock}/bin/slock";
+	   };
+	};
     };
 
     # System version

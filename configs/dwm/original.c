@@ -32,12 +32,10 @@
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
-#include <X11/XF86keysym.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
-#include <pthread.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
@@ -52,6 +50,7 @@
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
                                * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
 #define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
@@ -271,49 +270,6 @@ static Window root, wmcheckwin;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
-
-extern const char **current_theme;
-const char *colors[2][3];
-
-
-void
-update_colors(void) {
-    colors[SchemeNorm][0] = (char *)current_theme[0];
-    colors[SchemeNorm][1] = (char *)current_theme[1];
-    colors[SchemeNorm][2] = (char *)current_theme[2];
-
-    colors[SchemeSel][0] = (char *)current_theme[0];
-    colors[SchemeSel][1] = (char *)current_theme[2];
-    colors[SchemeSel][2] = (char *)current_theme[2];
-}
-
-void
-check_theme(Display *dpy) {
-    char *name = NULL;
-    Window root = DefaultRootWindow(dpy);
-
-    if (XFetchName(dpy, root, &name)) {
-	if (name && strstr(name, "change")) {
-	    current_theme = red;
-	    update_colors();
-	}
-	XFree(name);
-    }
-}
-
-void *
-theme_checker(void *arg) {
-    Display *dpy_thread = XOpenDisplay(NULL);
-    if (!dpy_thread) return NULL;
-
-    for (;;) {
-	check_theme(dpy_thread);
-	usleep(100000);
-    }
-
-    XCloseDisplay(dpy_thread);
-    return NULL;
-}
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
@@ -1693,7 +1649,7 @@ spawn(const Arg *arg)
 {
 	struct sigaction sa;
 
-	if (arg->v == roficmd)
+	if (arg->v == dmenucmd)
 		dmenumon[0] = '0' + selmon->num;
 	if (fork() == 0) {
 		if (dpy)
@@ -1895,7 +1851,7 @@ updatebarpos(Monitor *m)
 }
 
 void
-updateclientlist(void)
+updateclientlist()
 {
 	Client *c;
 	Monitor *m;
@@ -2184,10 +2140,8 @@ zoom(const Arg *arg)
 	pop(c);
 }
 
-
 int
 main(int argc, char *argv[])
-
 {
 	if (argc == 2 && !strcmp("-v", argv[1]))
 		die("dwm-"VERSION);
@@ -2198,15 +2152,12 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
 	checkotherwm();
-	update_colors();
 	setup();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-	pthread_t theme_thread;
-	pthread_create(&theme_thread, NULL, theme_checker, NULL);
 	run();
 	cleanup();
 	XCloseDisplay(dpy);

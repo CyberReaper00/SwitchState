@@ -7,11 +7,6 @@ static const int showbar		= 1;  /* 0 means no bar */
 static const int topbar			= 1;  /* 0 means bottom bar */
 static const char *fonts[]		= { "Liberation Mono:bold:size=14" };
 static const char dmenufont[]		= "Liberation Mono:bold:size=14";
-/*
- * static const char col1[]		= "#FFFFFF";
- * static const char col2[]		= "#0E1C4A";
- * static const char col3[]		= "#3E54BD";
- */
 
 static const char *blue[] = {
 // 	text		dark		light
@@ -36,7 +31,7 @@ static const char *green[] = {
 */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5" };
 
 static const Rule rules[] = {
     // xprop(1):
@@ -60,6 +55,12 @@ static const Rule rules[] = {
 
     {"dolphin",			"dolphin",	       	NULL,
 	1 << 3,       		0,             		-1},
+
+    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",	       	NULL,
+	1 << 3,       		0,             		-1},
+
+    {"gpick",			"gpick",	       	NULL,
+	0 << 8,       		1,             		-1},
 };
 
 /* layout(s) */
@@ -92,67 +93,58 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[]	= { "rofi", "-show", "drun", NULL };
-static const char *termcmd[]	= { "sudo", "neovide", NULL };
+static const char *roficmd[]	= { "rofi", "-show", "drun", NULL };
+static const char *termcmd[]	= { "neovide", NULL };
 static const char *scrshot[]	= { "flameshot", "gui", NULL };
 static const char *browser[]	= { "chromium", NULL };
-static const char *win_setup[]	= { "/home/nixos/.startup.sh", NULL };
-
-// Media keys
-static const char *vol_up[]	= { "/home/nixos/.media_keys.sh up", NULL };
-static const char *vol_down[]	= { "/home/nixos/.media_keys.sh down", NULL };
-static const char *mute[]	= { "/home/nixos/.media_keys.sh mute", NULL };
+static const char *main_wins[]	= { "/home/nixos/.startup.sh", NULL };
+static const char *lockscr[]	= { "slock", NULL };
 
 static const Key keys[] = {
-	/* modifier			key		function        argument */
-	{ ALT,				XK_space,	spawn,          {.v = dmenucmd } },
-	{ ALT,				XK_n,		spawn,          {.v = termcmd } },
-	{ ALT,				XK_s,		spawn,          {.v = scrshot } },
-	{ ALT|CTRL,			XK_b,		spawn,          {.v = browser } },
-	{ ALT|SHIFT,			XK_p,		spawn,          {.v = win_setup } },
-	{ SUPER,			XK_b,		togglebar,      {0} },
-	{ ALT,				XK_a,		focusstack,     {.i = +1 } },
-	{ SUPER,			XK_d,		focusstack,     {.i = -1 } },
-	{ SUPER,			XK_i,		incnmaster,     {.i = +1 } },
-	{ SUPER,			XK_j,		incnmaster,     {.i = -1 } },
-	{ SUPER,			XK_h,		setmfact,       {.f = -0.05} },
-	{ SUPER,			XK_l,		setmfact,       {.f = +0.05} },
-	{ SUPER,			XK_Return,	zoom,           {0} },
-	{ ALT,				XK_l,		view,           {0} },
-	{ ALT|SHIFT,			XK_q,		killclient,     {0} },
-	{ ALT|SHIFT,			XK_j,		setlayout,      {.v = &layouts[0]} },
-	{ ALT|SHIFT,			XK_k,		setlayout,      {.v = &layouts[1]} },
-	{ ALT|SHIFT,			XK_l,		setlayout,      {.v = &layouts[2]} },
-	{ SUPER,			XK_space,	setlayout,      {0} },
-	{ SUPER|SHIFT,			XK_space,	togglefloating, {0} },
-	{ SUPER,			XK_0,		view,           {.ui = ~0 } },
-	{ SUPER|SHIFT,			XK_0,		tag,            {.ui = ~0 } },
-	{ SUPER,			XK_comma,	focusmon,       {.i = -1 } },
-	{ SUPER,			XK_period,	focusmon,       {.i = +1 } },
-	{ SUPER|SHIFT,			XK_comma,	tagmon,         {.i = -1 } },
-	{ SUPER|SHIFT,			XK_period,	tagmon,         {.i = +1 } },
 
-	// Media keys
-	{ 0,				XF86XK_AudioRaiseVolume,	spawn,         {.v = vol_up} },
-	{ 0,				XF86XK_AudioLowerVolume,	spawn,         {.v = vol_down} },
-	{ 0,				XF86XK_AudioMute,		spawn,         {.v = mute} },
-	/*
-	{ 0,				XK_8,		spawn,         {.v = vol_up} },
-	{ 0,				XK_9,		spawn,         {.v = vol_down} },
-	{ 0,				XK_0,		spawn,         {.v = mute} },
-	*/
+	// modifier		key		function        argument
+
+	// Custom
+	{ ALT,			XK_n,		spawn,          {.v = termcmd } },
+	{ ALT,			XK_s,		spawn,          {.v = scrshot } },
+	{ SUPER|SHIFT,		XK_b,		spawn,          {.v = browser } },
+	{ ALT|SHIFT,		XK_p,		spawn,          {.v = main_wins } },
+	{ SUPER|SHIFT,		XK_l,		spawn,          {.v = lockscr } },
+	
+	// Navigation
+	{ ALT,			XK_space,	spawn,          {.v = roficmd } },
+	{ SUPER,		XK_b,		togglebar,      {0} },
+	{ ALT,			XK_l,		view,           {0} },
+	{ ALT,			XK_a,		focusstack,     {.i = +1 } },
+	{ ALT|SHIFT,		XK_a,		focusstack,     {.i = -1 } },
+	{ SUPER,		XK_i,		incnmaster,     {.i = +1 } },
+	{ SUPER,		XK_j,		incnmaster,     {.i = -1 } },
+	{ SUPER,		XK_h,		setmfact,       {.f = -0.05} },
+	{ SUPER,		XK_l,		setmfact,       {.f = +0.05} },
+	{ SUPER,		XK_Return,	zoom,           {0} },
+
+	// View Manipulation
+	{ ALT|SHIFT,		XK_q,		killclient,     {0} },
+	{ ALT|SHIFT,		XK_j,		setlayout,      {.v = &layouts[0]} },
+	{ ALT|SHIFT,		XK_k,		setlayout,      {.v = &layouts[1]} },
+	{ ALT|SHIFT,		XK_l,		setlayout,      {.v = &layouts[2]} },
+	{ SUPER,		XK_space,	setlayout,      {0} },
+	{ SUPER|SHIFT,		XK_space,	togglefloating, {0} },
+	{ SUPER,		XK_0,		view,           {.ui = ~0 } },
+	{ SUPER|SHIFT,		XK_0,		tag,            {.ui = ~0 } },
+	{ SUPER,		XK_comma,	focusmon,       {.i = -1 } },
+	{ SUPER,		XK_period,	focusmon,       {.i = +1 } },
+	{ SUPER|SHIFT,		XK_comma,	tagmon,         {.i = -1 } },
+	{ SUPER|SHIFT,		XK_period,	tagmon,         {.i = +1 } },
+	{ SUPER|SHIFT,		XK_q,		quit,		{0} },
 
 	// Tag Keys
-	TAGKEYS(			XK_1,		0)
-	TAGKEYS(			XK_2,		1)
-	TAGKEYS(			XK_3,		2)
-	TAGKEYS(			XK_4,		3)
-	TAGKEYS(			XK_5,		4)
-	TAGKEYS(			XK_6,		5)
-	TAGKEYS(			XK_7,		6)
-	TAGKEYS(			XK_8,		7)
-	TAGKEYS(			XK_9,		8)
-	{ SUPER|SHIFT,			XK_l,		quit,		{0} },
+	TAGKEYS(		XK_1,		0)
+	TAGKEYS(		XK_2,		1)
+	TAGKEYS(		XK_3,		2)
+	TAGKEYS(		XK_4,		3)
+	TAGKEYS(		XK_5,		4)
+	TAGKEYS(		XK_6,		5)
 };
 
 /* button definitions */

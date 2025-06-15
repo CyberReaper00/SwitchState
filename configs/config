@@ -3,4 +3,6 @@
 
 font-size = 20
 font-family = "Cascadia Code PL"
-theme = "tokyonight"
+theme = "Arthur"
+confirm-close-surface = false
+window-decoration = none

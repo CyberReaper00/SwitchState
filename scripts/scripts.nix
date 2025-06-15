@@ -1,35 +1,28 @@
 # ===============> Configs for the root user
-# Nvim config
-# mkdir -p /root/.config/nvim
-# ln -sf /home/nixos/nixos/configs/nvim-config/init.lua /root/.config/nvim/init.lua
+# Powershell config
+rm -rf /root/.config/powershell
+ln -sf /home/nixos/nixos/configs/pwsh-config /root/.config/powershell
+chown -h root:root /root/.config/powershell
 
 # Ghostty config
 mkdir -p /root/.config/ghostty
 ln -sf /home/nixos/nixos/configs/config /root/.config/ghostty/config
 
-# Powershell config
-mkdir -p /root/.config/powershell
-ln -sf /home/nixos/nixos/configs/pwsh-config/Microsoft.PowerShell_profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
-
 # ===============> Configs for the nixos user
+# Powershell config
+rm -rf /home/nixos/.config/powershell
+ln -sf /home/nixos/nixos/configs/pwsh-config /home/nixos/.config/powershell
+chown -h nixos:users /home/nixos/.config/powershell
+
 # Ghostty config
 mkdir -p /home/nixos/.config/ghostty
 ln -sf /home/nixos/nixos/configs/config /home/nixos/.config/ghostty/config
 chown nixos:users /home/nixos/.config/ghostty/config
 
-# Powershell config
-mkdir -p /home/nixos/.config/powershell
-ln -sf /home/nixos/nixos/configs/pwsh-config/Microsoft.PowerShell_profile.ps1 /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
-chown nixos:users /home/nixos/.config/powershell/Microsoft.PowerShell_profile.ps1
-
-# Powershell config
+# Rofi config
 mkdir -p /home/nixos/.config/rofi
 ln -sf /home/nixos/nixos/configs/config.rasi /home/nixos/.config/rofi/config.rasi
 chown nixos:users /home/nixos/.config/rofi/config.rasi
-
-# Mappings for media keys
-ln -sf /home/nixos/nixos/scripts/media_keys.sh /home/nixos/.media_keys.sh
-chown nixos:users /home/nixos/.media_keys.sh
 
 # Xsetroot Scripts
 install -m 755 -o nixos -g users /home/nixos/nixos/scripts/xsession /home/nixos/.xsession
