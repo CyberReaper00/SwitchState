@@ -8,13 +8,13 @@
     imports =
 	[   # Include the results of the hardware scan.
 	    ./hardware-configuration.nix
-	    /home/nixos/nixos/nix-configs/user_settings.nix
-	    /home/nixos/nixos/nix-configs/nix_settings.nix
-	    /home/nixos/nixos/nix-configs/container_settings.nix
-	    /home/nixos/nixos/nix-configs/defaults.nix
-	    /home/nixos/nixos/nix-configs/system_settings.nix
-	    /home/nixos/nixos/nix-configs/env_settings.nix
-	    /home/nixos/nixos/nix-configs/security_settings.nix
+	    ./nix_configs/user_settings.nix
+	    ./nix_configs/nix_settings.nix
+	    ./nix_configs/container_settings.nix
+	    ./nix_configs/defaults.nix
+	    ./nix_configs/system_settings.nix
+	    ./nix_configs/env_settings.nix
+	    ./nix_configs/security_settings.nix
 	];
 
     services.xserver = {
@@ -27,13 +27,13 @@
 
 	(final: prev: {
 	    dwm = prev.dwm.overrideAttrs (old: {
-		 src = /home/nixos/nixos/user-configs/dwm;
+		 src = ./user_configs/dwm;
 	    });
 	})
 
 	(final: prev: {
 	    slock = prev.slock.overrideAttrs (old: {
-		 src = /home/nixos/nixos/user-configs/slock;
+		 src = ./user_configs/slock;
 		 buildInputs = (old.buildInputs or []) ++ [
 		    prev.xorg.libXinerama
 		 ];

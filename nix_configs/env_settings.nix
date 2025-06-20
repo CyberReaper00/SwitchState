@@ -8,7 +8,7 @@
 	    EDITOR	= "${pkgs.neovim}/bin/nvim";
 	    VISUAL	= "${pkgs.neovim}/bin/nvim";
 	    BROWSER	= "${pkgs.chromium}/bin/chromium";
-	    TERMINAL	= "qterminal";
+	    TERMINAL	= "${pkgs.lxqt.qterminal}/bin/qterminal";
 	    NIXPKGS_ALLOW_UNFREE = "1";
 	};
 
@@ -38,6 +38,7 @@
 	    home-manager
 	    icu
 	    libreoffice
+	    lxqt.qterminal
 	    kdePackages.dolphin
 	    kdePackages.kcalc
 	    mpv

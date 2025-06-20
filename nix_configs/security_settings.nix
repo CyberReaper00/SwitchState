@@ -12,9 +12,6 @@
 		commands = [{
 		    command = "/run/current-system/sw/bin/neovide";
 		    options = [ "SETENV" "NOPASSWD" ];
-		}{
-		    command = "/home/nixos/nixos/scripts/kill_all.sh";
-		    options = [ "SETENV" "NOPASSWD" ];
 		}];
 	    }];
 	};

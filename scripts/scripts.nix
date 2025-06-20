@@ -1,32 +1,38 @@
 # ===============> Configs for the root user
 # Powershell config
-rm -rf /root/.config/powershell
-ln -sf /home/nixos/nixos/configs/pwsh-config /root/.config/powershell
+mkdir -p /root/.config/powershell
+ln -sf /home/nixos/nixos/user_configs/pwsh_config /root/.config/powershell
 chown -h root:root /root/.config/powershell
 
+# Nvim config
+mkdir -p /root/.config/nvim
+ln -sf /home/nixos/nixos/user_configs/nvim_config /root/.config/nvim
+chown -h root:root /root/.config/nvim
+
 # GTK config 
-rm -rf /root/.config/gtk-3.0/settings.ini
-ln -sf /home/nixos/nixos/configs/gtk/settings.ini /root/.config/gtk-3.0/settings.ini
+rm -f /root/.config/gtk-3.0/settings.ini
+ln -sf /home/nixos/nixos/user_configs/settings.ini /root/.config/gtk-3.0/settings.ini
+chown -h root:root /root/.config/gtk-3.0/settings.ini
 
 # ===============> Configs for the nixos user
 # Powershell config
 rm -rf /home/nixos/.config/powershell
-ln -sf /home/nixos/nixos/configs/pwsh_config /home/nixos/.config/powershell
+ln -sf /home/nixos/nixos/user_configs/pwsh_config /home/nixos/.config/powershell
 chown -h nixos:users /home/nixos/.config/powershell
 
 # Nvim config
 rm -rf /home/nixos/.config/nvim
-ln -sf /home/nixos/nixos/configs/nvim_config /home/nixos/.config/nvim
+ln -sf /home/nixos/nixos/user_configs/nvim_config /home/nixos/.config/nvim
 chown -h nixos:users /home/nixos/.config/nvim
 
 # Ghostty config
 mkdir -p /home/nixos/.config/ghostty
-ln -sf /home/nixos/nixos/configs/config /home/nixos/.config/ghostty/config
+ln -sf /home/nixos/nixos/user_configs/config /home/nixos/.config/ghostty/config
 chown nixos:users /home/nixos/.config/ghostty/config
 
 # Rofi config
 mkdir -p /home/nixos/.config/rofi
-ln -sf /home/nixos/nixos/configs/config.rasi /home/nixos/.config/rofi/config.rasi
+ln -sf /home/nixos/nixos/user_configs/config.rasi /home/nixos/.config/rofi/config.rasi
 chown nixos:users /home/nixos/.config/rofi/config.rasi
 
 # Xsetroot Scripts
