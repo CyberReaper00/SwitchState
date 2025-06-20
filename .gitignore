@@ -1,2 +1,2 @@
-configs/nvim-config/
-configs/pwsh-config/
+./user_configs/nvim_config/
+./user_configs/pwsh_config/
