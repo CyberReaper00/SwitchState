@@ -285,33 +285,35 @@ update_colors(void) {
     colors[SchemeSel][0] = (char *)current_theme[0];
     colors[SchemeSel][1] = (char *)current_theme[2];
     colors[SchemeSel][2] = (char *)current_theme[2];
+
+    for (Monitor *m = mons; m; m = m->next) {
+	drawbar(m); /* Force redraw of bar */
+	arrange(m); /* Optionally reapply layout with new colors */
+    }
 }
 
-void
-check_theme(Display *dpy) {
-    char *name = NULL;
-    Window root = DefaultRootWindow(dpy);
-
-    if (XFetchName(dpy, root, &name)) {
-	if (name && strstr(name, "change")) {
-	    current_theme = red;
-	    update_colors();
-	}
-	XFree(name);
-    }
+int
+is_charging(void) {
+    FILE *f = fopen("/sys/class/power_supply/AC/online", "r");
+    if (!f) return 0;
+    int status = 0;
+    fscanf(f, "%d", &status);
+    fclose(f);
+    return status;
 }
 
 void *
 theme_checker(void *arg) {
-    Display *dpy_thread = XOpenDisplay(NULL);
-    if (!dpy_thread) return NULL;
-
+    int last_status = -1;
     for (;;) {
-	check_theme(dpy_thread);
-	usleep(100000);
+	int charging = is_charging();
+	if (charging != last_status) {
+	    current_theme = charging ? blue : red;
+	    update_colors();
+	    last_status = charging;
+	}
+	usleep(1000000); /* 1s sleep */
     }
-
-    XCloseDisplay(dpy_thread);
     return NULL;
 }
 
@@ -2183,7 +2185,6 @@ zoom(const Arg *arg)
 		return;
 	pop(c);
 }
-
 
 int
 main(int argc, char *argv[])
