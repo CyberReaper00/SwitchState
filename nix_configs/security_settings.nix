@@ -2,29 +2,29 @@
 
 {
     security = {
-	sudo = {
-	    enable = true;
-	    wheelNeedsPassword = false;
+		sudo = {
+			enable = true;
+			wheelNeedsPassword = false;
 
-	    extraRules = [{
-		users = [ "nixos" ];
+			extraRules = [{
+				users = [ "nixos" ];
 
-		commands = [{
-		    command = "/run/current-system/sw/bin/neovide";
-		    options = [ "SETENV" "NOPASSWD" ];
-		}];
-	    }];
-	};
-	
-	wrappers = {
+				commands = [{
+					command = "/run/current-system/sw/bin/neovide";
+					options = [ "SETENV" "NOPASSWD" ];
+				}];
+			}];
+		};
+		
+		wrappers = {
 
-	    slock = {
-	       owner = "root";
-	       group = "root";
-	       setuid = true;
-	       source = "${pkgs.slock}/bin/slock";
-	   };
-	};
+			slock = {
+			   owner = "root";
+			   group = "root";
+			   setuid = true;
+			   source = "${pkgs.slock}/bin/slock";
+		   };
+		};
     };
 
     # System install version

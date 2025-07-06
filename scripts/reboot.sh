@@ -13,5 +13,3 @@ for pid in $(pgrep -u "$USER"); do
 	kill -9 "$pid"
     fi
 done
-
-systemctl reboot

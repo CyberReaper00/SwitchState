@@ -39,7 +39,7 @@
 #include <X11/Xutil.h>
 #include <pthread.h>
 #ifdef XINERAMA
-    #include <X11/extensions/Xinerama.h>
+#include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
 
@@ -272,6 +272,52 @@ static Window root, wmcheckwin;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+
+/*
+extern const char **current_theme;
+const char *colors[2][3];
+
+void
+update_colors(void) {
+    colors[SchemeNorm][0] = (char *)current_theme[0];
+    colors[SchemeNorm][1] = (char *)current_theme[1];
+    colors[SchemeNorm][2] = (char *)current_theme[2];
+
+    colors[SchemeSel][0] = (char *)current_theme[0];
+    colors[SchemeSel][1] = (char *)current_theme[2];
+    colors[SchemeSel][2] = (char *)current_theme[2];
+
+    for (Monitor *m = mons; m; m = m->next) {
+	drawbar(m); // Force redraw of bar 
+	arrange(m); // Optionally reapply layout with new colors 
+    }
+}
+
+int
+is_charging(void) {
+    FILE *f = fopen("/sys/class/power_supply/AC/online", "r");
+    if (!f) return 0;
+    int status = 0;
+    fscanf(f, "%d", &status);
+    fclose(f);
+    return status;
+}
+
+void *
+theme_checker(void *arg) {
+    int last_status = -1;
+    for (;;) {
+	int charging = is_charging();
+	if (charging != last_status) {
+	    current_theme = charging ? blue : red;
+	    update_colors();
+	    last_status = charging;
+	}
+	usleep(1000000); // 1s sleep
+    }
+    return NULL;
+}
+*/
 
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };

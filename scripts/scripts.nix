@@ -10,9 +10,9 @@ ln -sf /home/nixos/nixos/user_configs/nvim_config /root/.config/nvim
 chown -h root:root /root/.config/nvim
 
 # GTK config 
-rm -f /root/.config/gtk-3.0/settings.ini
+mkdir -p /root/.config/gtk-3.0
 ln -sf /home/nixos/nixos/user_configs/settings.ini /root/.config/gtk-3.0/settings.ini
-chown -h root:root /root/.config/gtk-3.0/settings.ini
+chown root:root /root/.config/gtk-3.0/settings.ini
 
 # ===============> Configs for the nixos user
 # Powershell config

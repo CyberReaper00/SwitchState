@@ -20,7 +20,7 @@ while ($true) {
         $time = "N\A"
     }
 
-    $status = "  ╠═══╣ $wifi ╠═╣ $day ▊ $date ▊ $time ╠═══╣ "
+    $status = "  ╠═══ $wifi ═══╬═══ $day ▊ $date ▊ $time ═══╣ "
     xsetroot -name $status
 
     Start-Sleep -Milliseconds 400

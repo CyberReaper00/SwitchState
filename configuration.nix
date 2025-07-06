@@ -40,7 +40,4 @@
 	    });
 	})
     ];
-
-    # xwinwrap -fs -fdt -b -nf -- mpv --no-border --loop --vo=x11 --wid=%WID /path/to/video.mp4 &
-
 }
