@@ -18,26 +18,26 @@
 	];
 
     services.xserver = {
-	enable = true;
-	windowManager.dwm.enable = true;
+		enable = true;
+		windowManager.dwm.enable = true;
     };
 
     # Extract config information from its source folder
     nixpkgs.overlays = [
 
-	(final: prev: {
-	    dwm = prev.dwm.overrideAttrs (old: {
-		 src = ./user_configs/dwm;
-	    });
-	})
+		(final: prev: {
+			dwm = prev.dwm.overrideAttrs (old: {
+				src = ./user_configs/dwm;
+			});
+		})
 
-	(final: prev: {
-	    slock = prev.slock.overrideAttrs (old: {
-		 src = ./user_configs/slock;
-		 buildInputs = (old.buildInputs or []) ++ [
-		    prev.xorg.libXinerama
-		 ];
-	    });
-	})
+		(final: prev: {
+			slock = prev.slock.overrideAttrs (old: {
+				 src = ./user_configs/slock;
+				 buildInputs = (old.buildInputs or []) ++ [
+					prev.xorg.libXinerama
+				 ];
+			});
+		})
     ];
 }

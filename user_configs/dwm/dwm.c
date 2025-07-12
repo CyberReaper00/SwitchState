@@ -30,16 +30,15 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <pthread.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
-#include <X11/XF86keysym.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
-#include <pthread.h>
 #ifdef XINERAMA
-    #include <X11/extensions/Xinerama.h>
+#include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
 
@@ -52,6 +51,7 @@
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
                                * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
 #define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
+#define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
@@ -60,7 +60,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeN }; /* color schemes */
+enum { SchemeNorm, SchemeSel }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -177,6 +177,7 @@ static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
 static void incnmaster(const Arg *arg);
+static int ischarging(void);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
@@ -203,7 +204,6 @@ static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
-static void setscheme(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
 static void showhide(Client *c);
@@ -218,6 +218,7 @@ static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
 static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
+static void updatecolors(void);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
 static void updateclientlist(void);
@@ -264,7 +265,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 static Atom wmatom[WMLast], netatom[NetLast];
 static int running = 1;
 static Cur *cursor[CurLast];
-static Clr **schemes, **scheme;
+static Clr **scheme;
 static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
@@ -488,9 +489,9 @@ cleanup(void)
 		cleanupmon(mons);
 	for (i = 0; i < CurLast; i++)
 		drw_cur_free(drw, cursor[i]);
-	for (i = 0; i < LENGTH(colors) * SchemeN; i++)
-		free(schemes[i]);
-	free(schemes);
+	for (i = 0; i < LENGTH(colors); i++)
+		free(scheme[i]);
+	free(scheme);
 	XDestroyWindow(dpy, wmcheckwin);
 	drw_free(drw);
 	XSync(dpy, False);
@@ -984,6 +985,16 @@ incnmaster(const Arg *arg)
 {
 	selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
 	arrange(selmon);
+}
+
+int
+ischarging(void) {
+	FILE *f = fopen("/sys/class/power_supply/AC/online", "r");
+	if (!f) return 0;
+	int status = 0;
+	fscanf(f, "%d", &status);
+	fclose(f);
+	return status;
 }
 
 #ifdef XINERAMA
@@ -1539,33 +1550,9 @@ setmfact(const Arg *arg)
 }
 
 void
-setscheme(const Arg *arg) {
-    ptrdiff_t si;
-    Monitor *m;
-    Client *c;
-
-    if (!arg || arg->i == 0)
-	si = 0;
-    else
-	si = (scheme - schemes) + arg->i * SchemeN;
-
-    if (si < 0)
-	si += LENGTH(colors) * SchemeN;
-    else if (si >= LENGTH(colors) * SchemeN)
-	si -= LENGTH(colors) * SchemeN;
-
-    scheme = &schemes[si];
-
-    drawbars();
-    for (m = mons; m; m = m->next)
-	for (c = m->clients; c; c = c->next)
-	    XSetWindowBorder(dpy, c->win, scheme[c == selmon->sel ? SchemeSel : SchemeNorm][ColBorder].pixel);
-}
-
-void
 setup(void)
 {
-	int i, j;
+	int i;
 	XSetWindowAttributes wa;
 	Atom utf8string;
 	struct sigaction sa;
@@ -1591,31 +1578,28 @@ setup(void)
 	bh = drw->fonts->h + 2;
 	updategeom();
 	/* init atoms */
-	utf8string 			= XInternAtom(dpy, "UTF8_STRING", False);
-	wmatom[WMProtocols] 		= XInternAtom(dpy, "WM_PROTOCOLS", False);
-	wmatom[WMDelete] 		= XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-	wmatom[WMState] 		= XInternAtom(dpy, "WM_STATE", False);
-	wmatom[WMTakeFocus] 		= XInternAtom(dpy, "WM_TAKE_FOCUS", False);
-	netatom[NetActiveWindow] 	= XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
-	netatom[NetSupported] 		= XInternAtom(dpy, "_NET_SUPPORTED", False);
-	netatom[NetWMName] 		= XInternAtom(dpy, "_NET_WM_NAME", False);
-	netatom[NetWMState] 		= XInternAtom(dpy, "_NET_WM_STATE", False);
-	netatom[NetWMCheck] 		= XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
-	netatom[NetWMFullscreen] 	= XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
-	netatom[NetWMWindowType] 	= XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
-	netatom[NetWMWindowTypeDialog] 	= XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
-	netatom[NetClientList] 		= XInternAtom(dpy, "_NET_CLIENT_LIST", False);
+	utf8string = XInternAtom(dpy, "UTF8_STRING", False);
+	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
+	wmatom[WMDelete] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+	wmatom[WMState] = XInternAtom(dpy, "WM_STATE", False);
+	wmatom[WMTakeFocus] = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
+	netatom[NetActiveWindow] = XInternAtom(dpy, "_NET_ACTIVE_WINDOW", False);
+	netatom[NetSupported] = XInternAtom(dpy, "_NET_SUPPORTED", False);
+	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
+	netatom[NetWMCheck] = XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", False);
+	netatom[NetWMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
+	netatom[NetWMWindowType] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
+	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
+	netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
 	/* init cursors */
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
-	cursor[CurMove]   = drw_cur_create(drw, XC_fleur);
+	cursor[CurMove] = drw_cur_create(drw, XC_fleur);
 	/* init appearance */
-	schemes = ecalloc(LENGTH(colors), SchemeN * sizeof(Clr *));
-	for (j = LENGTH(colors) - 1; j >= 0; j--) {
-	    scheme = &schemes[j * SchemeN];
-	    for (i = 0; i < SchemeN; i++)
-		scheme[i] = drw_scm_create(drw, colors[j][i], 3);
-	}
+	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
+	for (i = 0; i < LENGTH(colors); i++)
+		scheme[i] = drw_scm_create(drw, (const char **)colors[i], 3);
 	/* init bars */
 	updatebars();
 	updatestatus();
@@ -1679,7 +1663,7 @@ spawn(const Arg *arg)
 	struct sigaction sa;
 
 	if (arg->v == roficmd)
-		dmenumon[0] = '0' + selmon->num;
+		rofimon[0] = '0' + selmon->num;
 	if (fork() == 0) {
 		if (dpy)
 			close(ConnectionNumber(dpy));
@@ -1739,6 +1723,21 @@ tile(Monitor *m)
 			if (ty + HEIGHT(c) < m->wh)
 				ty += HEIGHT(c);
 		}
+}
+
+void *
+themechecker(void *arg) {
+	int last_status = -1;
+	for (;;) {
+		int charging = ischarging();
+		if (charging != last_status) {
+			current_theme = charging ? blue : red;
+			updatecolors();
+			last_status = charging;
+		}
+		usleep(1000000);
+	}
+	return NULL;
 }
 
 void
@@ -1845,6 +1844,28 @@ unmapnotify(XEvent *e)
 }
 
 void
+updatecolors(void) {
+	colors[SchemeNorm][0] = (char *)current_theme[0];
+	colors[SchemeNorm][1] = (char *)current_theme[1];
+	colors[SchemeNorm][2] = (char *)current_theme[2];
+
+	colors[SchemeSel][0] = (char *)current_theme[0];
+	colors[SchemeSel][1] = (char *)current_theme[2];
+	colors[SchemeSel][2] = (char *)current_theme[2];
+
+	for (int i = 0; i < LENGTH(colors); i++) {
+		if (scheme[i])
+			free(scheme[i]);
+		scheme[i] = drw_scm_create(drw, (const char **)colors[i], 3);
+	}
+
+	for (Monitor *m = mons; m; m = m->next) {
+		drawbar(m);
+		arrange(m);
+	}
+}
+
+void
 updatebars(void)
 {
 	Monitor *m;
@@ -1880,7 +1901,7 @@ updatebarpos(Monitor *m)
 }
 
 void
-updateclientlist(void)
+updateclientlist()
 {
 	Client *c;
 	Monitor *m;
@@ -2171,7 +2192,6 @@ zoom(const Arg *arg)
 
 int
 main(int argc, char *argv[])
-
 {
 	if (argc == 2 && !strcmp("-v", argv[1]))
 		die("dwm-"VERSION);
@@ -2182,16 +2202,18 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
 	checkotherwm();
-	//update_colors();
 	setup();
+
+	pthread_t theme_thread;
+	pthread_create(&theme_thread, NULL, themechecker, NULL);
+
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-	//pthread_t theme_thread;
-	//pthread_create(&theme_thread, NULL, theme_checker, NULL);
 	run();
+	pthread_join(theme_thread, NULL);
 	cleanup();
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;

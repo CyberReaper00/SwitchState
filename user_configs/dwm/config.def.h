@@ -3,20 +3,35 @@
 /* appearance */
 static const unsigned int borderpx	= 6;  /* border pixel of windows */
 static const unsigned int snap		= 32; /* snap pixel */
-static const int showbar		= 1;  /* 0 means no bar */
-static const int topbar			= 1;  /* 0 means bottom bar */
-static const char *fonts[]		= { "Hasklig:bold:size=14" };
+static const int showbar			= 1;  /* 0 means no bar */
+static const int topbar				= 1;  /* 0 means bottom bar */
+static const char *fonts[]			= { "Hasklig:bold:size=14" };
 
-static const char *colors[][SchemeN][3] = {
-    {
-	[SchemeNorm] = { "#FFFFFF", 	"#0E1C4A", 	"#3E54BD" },
-	[SchemeSel]  = { "#FFFFFF", 	"#3E54BD", 	"#0E1C4A" },
-    },
-    {
-	[SchemeNorm] = { "#FFFFFF", 	"#430B07", 	"#73493D" },
-	[SchemeSel]  = { "#FFFFFF", 	"#73493D", 	"#430B07" },
-    },
+char *colors[][3] = {
+ 	/*               text		dark		light   */
+	[SchemeNorm] = { "#ffffff", "#222222", "#444444" },
+	[SchemeSel]  = { "#ffffff", "#005577", "#005577" },
 };
+
+static const char *blue[] = {
+	"#FFFFFF", "#0E1C4A", "#3E54BD"
+};
+
+static const char *red[] = {
+	"#FFFFFF", "#340B07", "#73493D"
+};
+
+static const char **current_theme = blue;
+
+/*
+blue - conv_hex "#0E1C4A #1E3070 #282D6E #3E54BD #6C76CB"
+red - conv_hex "#240200 #340B07 #400905 #50241D #73493D"
+green - conv_hex "#020C02 #193A0D #1A2C12 #1B331D #385C17"
+
+static const char *green[] = {
+    "#1A2C12", "#020C02", "#193A0D", "#385C17", "#1B331D"
+};
+*/
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5" };
@@ -32,6 +47,10 @@ static const Rule rules[] = {
     {"neovide",			"neovide",		NULL,
 	1 << 0,			0,			-1},
 
+    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",	       	NULL,
+	1 << 0,       		0,             		-1}, // Gemini
+
+
     {"Chromium-browser",	"chromium-browser",	NULL,
 	1 << 1,       		0,             		-1},
 
@@ -41,9 +60,6 @@ static const Rule rules[] = {
 
     {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",	       	NULL,
 	1 << 2,       		0,             		-1}, // Youtube
-
-    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",	       	NULL,
-	1 << 2,       		0,             		-1}, // Gemini
 
     {"discord",			"discord",	       	NULL,
 	1 << 2,       		0,             		-1},
@@ -76,8 +92,8 @@ static const Layout layouts[] = {
 #define SUPER	Mod4Mask
 
 #define TAGKEYS(KEY,TAG) \
-	{ ALT,			KEY,      view,           {.ui = 1 << TAG} }, \
-	{ ALT|CTRL,		KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ ALT,				KEY,      view,           {.ui = 1 << TAG} }, \
+	{ ALT|CTRL,			KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ ALT|SHIFT,		KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ ALT|CTRL|SHIFT, 	KEY,      toggletag,      {.ui = 1 << TAG} },
 
@@ -85,10 +101,10 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static char rofimon [2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *roficmd[]	= { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]	= { "sh", "/home/nixos/nixos/scripts/qterm.sh", NULL };
-static const char *nvcmd[]	= { "neovide", NULL };
+static const char *nvcmd[]		= { "neovide", NULL };
 static const char *scrshot[]	= { "flameshot", "gui", NULL };
 static const char *browser[]	= { "chromium", NULL };
 static const char *main_wins[]	= { "/home/nixos/.startup.sh", NULL };
@@ -105,7 +121,7 @@ static const Key keys[] = {
 	{ SUPER|SHIFT,	XK_b,		spawn,          {.v = browser } },
 	{ ALT|SHIFT,  	XK_p,		spawn,          {.v = main_wins } },
 	{ SUPER|SHIFT,	XK_l,		spawn,          {.v = lockscr } },
-	{ SUPER,		XK_s,		setscheme,      {.i = +1 } },
+	//{ SUPER,		XK_s,		setscheme,      	{.i = +1 } },
 	
 	// Navigation
 	{ ALT,			XK_space,	spawn,          {.v = roficmd } },
@@ -135,12 +151,12 @@ static const Key keys[] = {
 	{ SUPER|SHIFT,	XK_q,		quit,			{0} },
 
 	// Tag Keys
-	TAGKEYS(		XK_1,		0)
-	TAGKEYS(		XK_2,		1)
-	TAGKEYS(		XK_3,		2)
-	TAGKEYS(		XK_4,		3)
-	TAGKEYS(		XK_5,		4)
-	TAGKEYS(		XK_6,		5)
+	TAGKEYS(                        XK_1,                      0)
+	TAGKEYS(                        XK_2,                      1)
+	TAGKEYS(                        XK_3,                      2)
+	TAGKEYS(                        XK_4,                      3)
+	TAGKEYS(                        XK_5,                      4)
+	TAGKEYS(                        XK_6,                      5)
 };
 
 /* button definitions */

@@ -71,6 +71,7 @@
 			superTuxKart
 			tree
 			tldr
+			tmux
 			tor-browser
 			ungoogled-chromium
 			unzip
@@ -86,9 +87,11 @@
 			xprintidle
 			xwinwrap
 			zaz
+
+			# Zig Packages
 			zig
 
-			# Python packages
+			# python packages
 			python312Full
 			/*
 			python312Packages.pip

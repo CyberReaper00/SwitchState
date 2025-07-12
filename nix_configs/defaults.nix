@@ -18,18 +18,21 @@
 		chromium = {
 			enable = true;
 			defaultSearchProviderEnabled = true;
-			defaultSearchProviderSearchURL = "https://sybil.com/search?q={searchTerms}";
+			defaultSearchProviderSearchURL = "https://www.startpage.com/sp/search?query={searchTerms}";
+			homepageLocation = "https://www.startpage.com/";
+			/*
 			extensions = [
-				"ocaahdebbfolfmndjeplogmgcagdmblk" # chromium web store
-				"eimadpbcbfnmbkopoojfekhnkhdbieeh" # dark reader
-				"fofhikdigdjbhphnekoglnjkoifoldhj" # fuzzy tab finder
-				"aapbdbdomjkkjkaonfhkkikfgjllcleb" # google translate
-				"fefodpegbocmidnfphgggnjcicipaibk" # notepad
-				"cmgdpmlhgjhoadnonobjeekmfcehffco" # ollama-ui
-				"cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
-				"nbhcbdghjpllgmfilhnhkllmkecfmpld" # user javascript and css
-				"hfjbmagddngcpeloejdejnfgbamkjaeg" # vimium c
+				"fnpbehpgglbfnpimkachnpnecjncndgm;https://clients2.google.com/service/update2/crx" # chromium web store ocaahdebbfolfmndjeplogmgcagdmblk
+				"eimadpbcbfnmbkopoojfekhnkhdbieeh;https://clients2.google.com/service/update2/crx" # dark reader
+				"fofhikdigdjbhphnekoglnjkoifoldhj;https://clients2.google.com/service/update2/crx" # fuzzy tab finder
+				"aapbdbdomjkkjkaonfhkkikfgjllcleb;https://clients2.google.com/service/update2/crx" # google translate
+				"fefodpegbocmidnfphgggnjcicipaibk;https://clients2.google.com/service/update2/crx" # notepad
+				"cmgdpmlhgjhoadnonobjeekmfcehffco;https://clients2.google.com/service/update2/crx" # ollama-ui
+				"cjpalhdlnbpafiamejdnhcphjbkeiagm;https://clients2.google.com/service/update2/crx" # ublock origin
+				"nbhcbdghjpllgmfilhnhkllmkecfmpld;https://clients2.google.com/service/update2/crx" # user javascript and css
+				"hfjbmagddngcpeloejdejnfgbamkjaeg;https://clients2.google.com/service/update2/crx" # vimium c
 			];
+			*/
 		};
 
 		nix-ld = {
@@ -40,6 +43,7 @@
 				openssl
 			];
 		};
+
     };
 
 }

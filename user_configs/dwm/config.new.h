@@ -3,18 +3,22 @@
 /* appearance */
 static const unsigned int borderpx	= 6;  /* border pixel of windows */
 static const unsigned int snap		= 32; /* snap pixel */
-static const int showbar		= 1;  /* 0 means no bar */
-static const int topbar			= 1;  /* 0 means bottom bar */
-static const char *fonts[]		= { "Hasklig:bold:size=14" };
+static const int showbar			= 1;  /* 0 means no bar */
+static const int topbar				= 1;  /* 0 means bottom bar */
+static const char *fonts[]			= { "Hasklig:bold:size=14" };
+
+char *colors[][3] = {
+ 	/*               fg         bg         border   */
+	[SchemeNorm] = { "#ffffff", "#222222", "#444444" },
+	[SchemeSel]  = { "#ffffff", "#005577", "#005577" },
+};
 
 static const char *blue[] = {
-// 	text		dark		light
-	"#FFFFFF", 	"#0E1C4A", 	"#3E54BD"
+	"#FFFFFF", "#0E1C4A", "#3E54BD"
 };
 
 static const char *red[] = {
-// 	text		dark		light
-	"#FFFFFF", 	"#430B07", 	"#73493D"
+	"#FFFFFF", "#430B07", "#73493D"
 };
 
 static const char **current_theme = blue;
@@ -43,19 +47,25 @@ static const Rule rules[] = {
     {"neovide",			"neovide",		NULL,
 	1 << 0,			0,			-1},
 
+    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",	       	NULL,
+	1 << 0,       		0,             		-1}, // Gemini
+
+
     {"Chromium-browser",	"chromium-browser",	NULL,
 	1 << 1,       		0,             		-1},
 
+
     {"Chromium-browser",	"crx_dgommhjhffiieicepokilddfojhkfnag",		NULL,
-	1 << 2,       		0,             		-1},
+	1 << 2,       		0,             		-1}, // Discord
+
+    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",	       	NULL,
+	1 << 2,       		0,             		-1}, // Youtube
 
     {"discord",			"discord",	       	NULL,
 	1 << 2,       		0,             		-1},
 
-    {"dolphin",			"dolphin",	       	NULL,
-	1 << 3,       		0,             		-1},
 
-    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",	       	NULL,
+    {"dolphin",			"dolphin",	       	NULL,
 	1 << 3,       		0,             		-1},
 
     {"gpick",			"gpick",	       	NULL,
@@ -102,15 +112,15 @@ static const char *lockscr[]	= { "slock", NULL };
 
 static const Key keys[] = {
 
-	// modifier		key		function        argument
+	// modifier		key			function        argument
 
 	// Custom
 	{ ALT,			XK_n,		spawn,          {.v = termcmd } },
-	{ ALT|SHIFT,		XK_n,		spawn,          {.v = nvcmd } },
+	{ ALT|SHIFT,	XK_n,		spawn,          {.v = nvcmd } },
 	{ ALT,			XK_s,		spawn,          {.v = scrshot } },
-	{ SUPER|SHIFT,		XK_b,		spawn,          {.v = browser } },
-	{ ALT|SHIFT,		XK_p,		spawn,          {.v = main_wins } },
-	{ SUPER|SHIFT,		XK_l,		spawn,          {.v = lockscr } },
+	{ SUPER|SHIFT,	XK_b,		spawn,          {.v = browser } },
+	{ ALT|SHIFT,  	XK_p,		spawn,          {.v = main_wins } },
+	{ SUPER|SHIFT,	XK_l,		spawn,          {.v = lockscr } },
 	{ SUPER,		XK_s,		setscheme,      {.i = +1 } },
 	
 	// Navigation
@@ -118,7 +128,7 @@ static const Key keys[] = {
 	{ SUPER,		XK_b,		togglebar,      {0} },
 	{ ALT,			XK_Tab,		view,           {0} },
 	{ ALT,			XK_a,		focusstack,     {.i = +1 } },
-	{ ALT|SHIFT,		XK_a,		focusstack,     {.i = -1 } },
+	{ ALT|SHIFT,	XK_a,		focusstack,     {.i = -1 } },
 	{ SUPER,		XK_j,		incnmaster,     {.i = +1 } },
 	{ SUPER,		XK_k,		incnmaster,     {.i = -1 } },
 	{ SUPER,		XK_h,		setmfact,       {.f = -0.05} },
@@ -126,27 +136,27 @@ static const Key keys[] = {
 	{ SUPER,		XK_Return,	zoom,           {0} },
 
 	// View Manipulation
-	{ ALT|SHIFT,		XK_q,		killclient,     {-1} },
-	{ SUPER|CTRL,		XK_j,		setlayout,      {.v = &layouts[0]} },
-	{ SUPER|CTRL,		XK_k,		setlayout,      {.v = &layouts[1]} },
-	{ SUPER|CTRL,		XK_l,		setlayout,      {.v = &layouts[2]} },
+	{ ALT|SHIFT,	XK_q,		killclient,     {-1} },
+	{ SUPER|CTRL,	XK_j,		setlayout,      {.v = &layouts[0]} },
+	{ SUPER|CTRL,	XK_k,		setlayout,      {.v = &layouts[1]} },
+	{ SUPER|CTRL,	XK_l,		setlayout,      {.v = &layouts[2]} },
 	{ SUPER,		XK_space,	setlayout,      {0} },
-	{ SUPER|SHIFT,		XK_space,	togglefloating, {0} },
+	{ SUPER|SHIFT,	XK_space,	togglefloating, {0} },
 	{ SUPER,		XK_0,		view,           {.ui = ~0 } },
-	{ SUPER|SHIFT,		XK_0,		tag,            {.ui = ~0 } },
+	{ SUPER|SHIFT,	XK_0,		tag,            {.ui = ~0 } },
 	{ SUPER,		XK_comma,	focusmon,       {.i = -1 } },
 	{ SUPER,		XK_period,	focusmon,       {.i = +1 } },
-	{ SUPER|SHIFT,		XK_comma,	tagmon,         {.i = -1 } },
-	{ SUPER|SHIFT,		XK_period,	tagmon,         {.i = +1 } },
-	{ SUPER|SHIFT,		XK_q,		quit,		{0} },
+	{ SUPER|SHIFT,	XK_comma,	tagmon,         {.i = -1 } },
+	{ SUPER|SHIFT,	XK_period,	tagmon,         {.i = +1 } },
+	{ SUPER|SHIFT,	XK_q,		quit,			{0} },
 
 	// Tag Keys
-	TAGKEYS(		XK_1,		0)
-	TAGKEYS(		XK_2,		1)
-	TAGKEYS(		XK_3,		2)
-	TAGKEYS(		XK_4,		3)
-	TAGKEYS(		XK_5,		4)
-	TAGKEYS(		XK_6,		5)
+	TAGKEYS(                        XK_1,                      0)
+	TAGKEYS(                        XK_2,                      1)
+	TAGKEYS(                        XK_3,                      2)
+	TAGKEYS(                        XK_4,                      3)
+	TAGKEYS(                        XK_5,                      4)
+	TAGKEYS(                        XK_6,                      5)
 };
 
 /* button definitions */
