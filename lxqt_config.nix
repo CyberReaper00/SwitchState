@@ -1,19 +1,27 @@
 { config, lib, pkgs, ... }:
 
 {
-    imports = [
-	./hardware-configuration.nix
-	./nix-configs/nix_settings.nix
-	./nix-configs/user_settings.nix
-	./nix-configs/container_settings.nix
-	./nix-configs/defaults.nix
-	./nix-configs/system_settings.nix
-	./nix-configs/env_settings.nix
-	./nix-configs/security_settings.nix
+    imports =
+	[ # Include the results of the hardware scan.
+	    ./hardware-configuration.nix
+	    ./nix_configs/user_settings.nix
+	    ./nix_configs/nix_settings.nix
+	    ./nix_configs/container_settings.nix
+	    ./nix_configs/defaults.nix
+	    ./nix_configs/system_settings.nix
+	    ./nix_configs/env_settings.nix
+	    ./nix_configs/security_settings.nix
     ];
 
-    services.xserver = {
-	enable = true;
-	desktopManager.lxqt.enable = true; 
-    };
+	environment.sessionVariables = { ENVIRONMENT = "LXQT"; };
+
+    services = {
+		xserver = {
+			enable = true;
+			displayManager.lightdm.enable = true;
+			desktopManager.lxqt.enable = true; 
+		};
+
+		#displayManager.preStart = "exec lxqt-session";
+	};
 }

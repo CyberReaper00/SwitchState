@@ -14,7 +14,7 @@
 			# Define nixos-user settings
 			nixos = {
 				isNormalUser = true;
-				extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" "lp"];
+				extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" "lp" "video" "render" ];
 				useDefaultShell = true;
 				linger = true;
 			};

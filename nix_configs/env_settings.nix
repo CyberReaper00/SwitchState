@@ -13,7 +13,6 @@
 		};
 
 		systemPackages = with pkgs; [
-			_20kly
 			OVMF
 			abuse
 			alsa-utils
@@ -22,9 +21,12 @@
 			brightnessctl
 			btop
 			copyq
+			cosmic-ext-calculator
 			discord
+			dmenu
 			dwm
 			easyeffects
+			fastfetch
 			fd
 			feh
 			firefox
@@ -33,21 +35,21 @@
 			#ghostty
 			git
 			gimp
+			gnome-characters
 			go
 			gost
 			gpick
-			gucharmap
 			home-manager
 			hugo
 			icu
 			libreoffice
 			lxqt.qterminal
 			kdePackages.dolphin
-			kdePackages.kcalc
 			mediawriter
+			mesa
 			mpv
-			neovim
 			neovide
+			neovim
 			nodePackages.nodejs
 			ntfs3g
 			obsidian
@@ -68,11 +70,10 @@
 			slstatus
 			st
 			steam
-			superTuxKart
-			tree
 			tldr
 			tmux
 			tor-browser
+			tree
 			ungoogled-chromium
 			unzip
 			virt-manager
@@ -83,9 +84,15 @@
 			xlsfonts
 			xorg.libXinerama
 			xorg.xdpyinfo
+			xorg.xinit
 			xorg.xsetroot
 			xprintidle
 			xwinwrap
+
+			# Games
+			_20kly
+			endless-sky
+			superTuxKart
 			zaz
 
 			# Zig Packages

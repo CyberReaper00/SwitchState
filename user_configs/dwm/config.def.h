@@ -8,7 +8,7 @@ static const int topbar				= 1;  /* 0 means bottom bar */
 static const char *fonts[]			= { "Hasklig:bold:size=14" };
 
 char *colors[][3] = {
- 	/*               text		dark		light   */
+ 	/*               fg         bg         border   */
 	[SchemeNorm] = { "#ffffff", "#222222", "#444444" },
 	[SchemeSel]  = { "#ffffff", "#005577", "#005577" },
 };
@@ -24,9 +24,9 @@ static const char *red[] = {
 static const char **current_theme = blue;
 
 /*
-blue - conv_hex "#0E1C4A #1E3070 #282D6E #3E54BD #6C76CB"
-red - conv_hex "#240200 #340B07 #400905 #50241D #73493D"
-green - conv_hex "#020C02 #193A0D #1A2C12 #1B331D #385C17"
+red - conv_hex "#50241d #240200 #400905 #340b07 #73493d"
+green - conv_hex "#1A2C12 #020C02 #193A0D #385C17 #1B331D"
+blue - conv_hex "#1E3070 #3E54BD #6C76CB #0E1C4A #282D6E"
 
 static const char *green[] = {
     "#1A2C12", "#020C02", "#193A0D", "#385C17", "#1B331D"
@@ -44,32 +44,27 @@ static const Rule rules[] = {
     // class			instance		title
     // tags mask		isfloating		monitor
 
-    {"neovide",			"neovide",		NULL,
-	1 << 0,			0,			-1},
-
-    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",	       	NULL,
-	1 << 0,       		0,             		-1}, // Gemini
-
+    {"neovide",		"neovide",		NULL,
+	1 << 0,			0,				-1},
+    {"qterminal",	"qterminal",	NULL,
+	1 << 0,			0,				-1},
 
     {"Chromium-browser",	"chromium-browser",	NULL,
-	1 << 1,       		0,             		-1},
-
+	1 << 1,      	0,          	-1},
+    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",   	NULL,
+	1 << 1,       	0,          	-1}, // Gemini
 
     {"Chromium-browser",	"crx_dgommhjhffiieicepokilddfojhkfnag",		NULL,
-	1 << 2,       		0,             		-1}, // Discord
+	1 << 2,       	0,          	-1}, // Discord
+    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",		NULL,
+	1 << 2,       	0,      		-1}, // Youtube
+    {"discord",		"discord",	    NULL,
+	1 << 2,       	0,             	-1},
 
-    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",	       	NULL,
-	1 << 2,       		0,             		-1}, // Youtube
-
-    {"discord",			"discord",	       	NULL,
-	1 << 2,       		0,             		-1},
-
-
-    {"dolphin",			"dolphin",	       	NULL,
-	1 << 3,       		0,             		-1},
-
-    {"gpick",			"gpick",	       	NULL,
-	0 << 8,       		1,             		-1},
+    {"dolphin",		"dolphin",	    NULL,
+	1 << 3,      	0,             	-1},
+    {"gpick",		"gpick",	    NULL,
+	~0,      		1,             	-1},
 };
 
 /* layout(s) */
@@ -101,7 +96,7 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char rofimon [2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static char rofimon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *roficmd[]	= { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]	= { "sh", "/home/nixos/nixos/scripts/qterm.sh", NULL };
 static const char *nvcmd[]		= { "neovide", NULL };
@@ -121,7 +116,7 @@ static const Key keys[] = {
 	{ SUPER|SHIFT,	XK_b,		spawn,          {.v = browser } },
 	{ ALT|SHIFT,  	XK_p,		spawn,          {.v = main_wins } },
 	{ SUPER|SHIFT,	XK_l,		spawn,          {.v = lockscr } },
-	//{ SUPER,		XK_s,		setscheme,      	{.i = +1 } },
+	// { SUPER,		XK_s,		setscheme,      {.i = +1 } },
 	
 	// Navigation
 	{ ALT,			XK_space,	spawn,          {.v = roficmd } },

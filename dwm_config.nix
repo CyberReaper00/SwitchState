@@ -17,11 +17,31 @@
 	    ./nix_configs/security_settings.nix
 	];
 
-    services.xserver = {
-		enable = true;
-		windowManager.dwm.enable = true;
-    };
+	environment.sessionVariables = { ENVIRONMENT = "DWM"; };
 
+	services = {
+		xserver = {
+			enable = true;
+			displayManager.lightdm.enable = true;
+			windowManager.dwm.enable = true;
+		};
+
+		dwm-status = {
+			enable = true;
+			order = [ "time" ];
+			extraConfig = ''
+				wifi=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes:' | cut -d ':' -f 2)
+				wifi_name="$${wifi:-N/A}"
+
+				day=$(date +"%a")
+				date_=$(date +"%d-%m-%y")
+				time_=$(date +"%I:%M:%S")
+
+				xsetroot -name "  ╠═══ $${wifi_name} ═══╬═══ $${day} ▊ $${date_} ▊ $${time_} ═══╣ "
+			'';
+		};
+
+	};
     # Extract config information from its source folder
     nixpkgs.overlays = [
 

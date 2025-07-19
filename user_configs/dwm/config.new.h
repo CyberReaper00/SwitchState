@@ -18,7 +18,7 @@ static const char *blue[] = {
 };
 
 static const char *red[] = {
-	"#FFFFFF", "#430B07", "#73493D"
+	"#FFFFFF", "#340B07", "#73493D"
 };
 
 static const char **current_theme = blue;
@@ -44,32 +44,27 @@ static const Rule rules[] = {
     // class			instance		title
     // tags mask		isfloating		monitor
 
-    {"neovide",			"neovide",		NULL,
-	1 << 0,			0,			-1},
-
-    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",	       	NULL,
-	1 << 0,       		0,             		-1}, // Gemini
-
+    {"neovide",		"neovide",		NULL,
+	1 << 0,			0,				-1},
+    {"qterminal",	"qterminal",	NULL,
+	1 << 0,			0,				-1},
 
     {"Chromium-browser",	"chromium-browser",	NULL,
-	1 << 1,       		0,             		-1},
-
+	1 << 1,      	0,          	-1},
+    {"Chromium-browser",	"crx_adfefoiphefecjmmhmajkgibjadkkjni",   	NULL,
+	1 << 1,       	0,          	-1}, // Gemini
 
     {"Chromium-browser",	"crx_dgommhjhffiieicepokilddfojhkfnag",		NULL,
-	1 << 2,       		0,             		-1}, // Discord
+	1 << 2,       	0,          	-1}, // Discord
+    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",		NULL,
+	1 << 2,       	0,      		-1}, // Youtube
+    {"discord",		"discord",	    NULL,
+	1 << 2,       	0,             	-1},
 
-    {"Chromium-browser",	"crx_agimnkijcaahngcdmfeangaknmldooml",	       	NULL,
-	1 << 2,       		0,             		-1}, // Youtube
-
-    {"discord",			"discord",	       	NULL,
-	1 << 2,       		0,             		-1},
-
-
-    {"dolphin",			"dolphin",	       	NULL,
-	1 << 3,       		0,             		-1},
-
-    {"gpick",			"gpick",	       	NULL,
-	0 << 8,       		1,             		-1},
+    {"dolphin",		"dolphin",	    NULL,
+	1 << 3,      	0,             	-1},
+    {"gpick",		"gpick",	    NULL,
+	~0,      		1,             	-1},
 };
 
 /* layout(s) */
@@ -92,8 +87,8 @@ static const Layout layouts[] = {
 #define SUPER	Mod4Mask
 
 #define TAGKEYS(KEY,TAG) \
-	{ ALT,			KEY,      view,           {.ui = 1 << TAG} }, \
-	{ ALT|CTRL,		KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ ALT,				KEY,      view,           {.ui = 1 << TAG} }, \
+	{ ALT|CTRL,			KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ ALT|SHIFT,		KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ ALT|CTRL|SHIFT, 	KEY,      toggletag,      {.ui = 1 << TAG} },
 
@@ -101,10 +96,10 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static char rofimon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *roficmd[]	= { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]	= { "sh", "/home/nixos/nixos/scripts/qterm.sh", NULL };
-static const char *nvcmd[]	= { "neovide", NULL };
+static const char *nvcmd[]		= { "neovide", NULL };
 static const char *scrshot[]	= { "flameshot", "gui", NULL };
 static const char *browser[]	= { "chromium", NULL };
 static const char *main_wins[]	= { "/home/nixos/.startup.sh", NULL };
@@ -121,7 +116,7 @@ static const Key keys[] = {
 	{ SUPER|SHIFT,	XK_b,		spawn,          {.v = browser } },
 	{ ALT|SHIFT,  	XK_p,		spawn,          {.v = main_wins } },
 	{ SUPER|SHIFT,	XK_l,		spawn,          {.v = lockscr } },
-	{ SUPER,		XK_s,		setscheme,      {.i = +1 } },
+	// { SUPER,		XK_s,		setscheme,      {.i = +1 } },
 	
 	// Navigation
 	{ ALT,			XK_space,	spawn,          {.v = roficmd } },

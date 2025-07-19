@@ -1,9 +1,3 @@
-# Requires PowerShell Core to be installed on Linux for /proc filesystem access.
-
-# Get the PID of the DWM process.
-# We use Get-Process with -Name "dwm" for exact matching.
-# Filtering by Owner is important to ensure it's the current user's DWM.
-# ErrorAction SilentlyContinue prevents errors if "dwm" process is not found.
 $DWM_PID = $null
 $DwmProcess = Get-Process -Name "dwm" -ErrorAction SilentlyContinue | Where-Object { $_.Owner -eq $env:USERNAME }
 if ($DwmProcess) {

@@ -24,16 +24,7 @@ in
 		# Xserver Settings
 		xserver = {
 			enable = true;
-			displayManager = {
-
-				lightdm = {
-					enable = true;
-					greeters.slick = {
-						enable = true;
-						theme.name = "Nordic";
-					};
-				};
-			};
+			videoDrivers = ["modesetting"];
 
 			# Configure keymap in X11
 			xkb = {
@@ -71,10 +62,29 @@ in
 
 		# Automatic detection of new media being attached
 		udisks2.enable = true;
+
+		# Starting compositor
+		picom = {
+			enable = true;
+
+			settings = {
+				#frame-opacity = 1.0;
+				opacity-rule = [
+					"70:class_g = 'qterminal'"
+				];
+			};
+		};
     };
 
     hardware = {
 		bluetooth.enable = true;
+		graphics = {
+			enable = true;
+			extraPackages = with pkgs; [
+				vaapiIntel
+				libva-utils
+			];
+		};
     };
 
     # System fonts

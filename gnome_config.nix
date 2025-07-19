@@ -13,12 +13,12 @@
 	    ./nix_configs/security_settings.nix
     ];
 
-	environment.sessionVariables = { ENVIRONMENT = "DEEPIN"; };
+	environment.sessionVariables = { ENVIRONMENT = "GNOME"; };
 
     services.xserver = {
 		enable = true;
 		displayManager.gdm.enable = true;
-		desktopManager.deepin.enable = true; 
+		desktopManager.gnome.enable = true; 
     };
 }
 
