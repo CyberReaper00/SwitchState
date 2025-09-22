@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Reboot
-Exec=sh "/home/nixos/nixos/scripts/reboot.sh"
-Type=Application
-Terminal=false
-Categories=Utility

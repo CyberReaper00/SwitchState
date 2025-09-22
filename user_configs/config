@@ -1,8 +1,0 @@
-# This is the configuration file for Ghostty.
-# Run `ghostty +show-config --default --docs` to view a list of
-
-font-size = 20
-font-family = "Cascadia Code PL"
-theme = "Arthur"
-confirm-close-surface = false
-window-decoration = none

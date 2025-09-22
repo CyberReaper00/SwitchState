@@ -1,5 +1,6 @@
 /* See LICENSE file for license details. */
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE   500
+#define LENGTH(X)       (sizeof X / sizeof X[0])
 #if HAVE_SHADOW_H
 #include <shadow.h>
 #endif
@@ -15,20 +16,22 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <X11/extensions/Xrandr.h>
+#ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
+#endif
 #include <X11/keysym.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/Xft/Xft.h>
 
 #include "arg.h"
 #include "util.h"
 
 char *argv0;
 
-/* global count to prevent repeated error messages */
-int count_error = 0;
-
 enum {
+	BACKGROUND,
 	INIT,
 	INPUT,
 	INPUT_ALT,
@@ -36,11 +39,18 @@ enum {
 	NUMCOLS
 };
 
+#include "config.h"
+
 struct lock {
 	int screen;
 	Window root, win;
 	Pixmap pmap;
 	unsigned long colors[NUMCOLS];
+	unsigned int x, y;
+	unsigned int xoff, yoff, mw, mh;
+	Drawable drawable;
+	GC gc;
+	XRectangle rectangles[LENGTH(rectangles)];
 };
 
 struct xrandr {
@@ -48,8 +58,6 @@ struct xrandr {
 	int evbase;
 	int errbase;
 };
-
-#include "config.h"
 
 static void
 die(const char *errstr, ...)
@@ -87,122 +95,6 @@ dontkillme(void)
 	}
 }
 #endif
-
-static int
-readescapedint(const char *str, int *i) {
-    int n = 0;
-    if (str[*i]) ++*i;
-    while (str[*i] && str[*i] != ';' && str[*i] != 'm') {
-	n = 10 * n + str[*i] - '0';
-	++*i;
-    }
-    return n;
-}
-
-static void 
-writemessage(Display *dpy, Window win, int screen) {
-    int len, line_len, width, height, s_width, s_height, i, k, tab_size, r, g, b, escaped_int, curr_len_line;
-    XGCValues		gr_values;
-    XFontStruct 	*fontinfo;
-    XColor		color, dummy;
-    XineramaScreenInfo 	*xsi;
-    GC			gc;
-
-    fontinfo = XLoadQueryFont(dpy, font_name);
-
-    if (fontinfo == NULL) {
-	if (count_error == 0) {
-	    fprintf(stderr, "slock: Unable to load font \"%s\"\n", font_name);
-	    fprintf(stderr, "slock: Try listing fonts with 'slock -f'\n");
-	    count_error++;
-	}
-	return;
-    }
-
-    tab_size = 8 * XTextWidth(fontinfo, " ", 1);
-
-    XAllocNamedColor(dpy, DefaultColormap(dpy, screen),
-		     text_color, &color, &dummy);
-
-    gr_values.font = fontinfo->fid;
-    gr_values.foreground = color.pixel;
-    gc = XCreateGC(dpy, win, GCFont+GCForeground, &gr_values);
-
-    /* To prevent uninitialised warnings */
-    xsi = NULL;
-
-    /* Start formatting and adding text */
-    len = strlen(message);
-
-    /* Max max line length (cut at '\n') */
-    line_len = curr_len_line = 0;
-    k = 0;
-    for (i = 0; i < len; i++) {
-	if (message[i] == '\n') {
-	    curr_len_line = 0;
-	    k++;
-	} else if (message[i] == 0x1b) {
-	    while (i < len && message[i] != 'm') {
-		i++;
-	    }
-	    if (i == len)
-		die("slock: Unclosed escape sequence\n");
-	} else {
-	    curr_len_line += XTextWidth(fontinfo, message + i, 1);
-	    if (curr_len_line > line_len) line_len = curr_len_line;
- 	}
-    }
-
-    /* If there is only one line */
-    if (line_len == 0) line_len = len;
-    if (XineramaIsActive(dpy)) {
-	xsi		= XineramaQueryScreens(dpy, &i);
-	s_width		= xsi[0].width;
-	s_height	= xsi[0].height;
-    } else {
-	s_width		= DisplayWidth(dpy, screen);
-	s_height	= DisplayHeight(dpy, screen);
-    }
-
-    width  = (s_width - line_len)/2;
-    height = s_height*1/2 - (k*20)/3;
-    line_len = 0;
-
-    /* Print the text while parsing 24 bit color ANSI escape codes */
-    for (i = k = 0; i < len; i++) {
-	switch (message[i]) {
-	    case '\n':
-		line_len = 0;
-		while (message[i + 1] == '\t') {
-		    line_len += tab_size;
-		    i++;
-		}
-		k++;
-		break;
-
-	    case 0x1b:
-		i++;
-		if (message[i] == '[') {
-		    escaped_int = readescapedint(message, &i);
-		    if (escaped_int == 39) continue;
-		    if (escaped_int != 38) die("slock: Unknown escape sequence%d\n", escaped_int);
-		    if (readescapedint(message, &i) != 2) die("slock: Only 24 bit color supported\n");
-		    r = readescapedint(message, &i) & 0xff;
-		    g = readescapedint(message, &i) & 0xff;
-		    b = readescapedint(message, &i) & 0xff;
-		    XSetForeground(dpy, gc, r << 16 | g << 8 | b);
-		} else {
-		    die("slock: Unknown escape sequence\n");
-		} break;
-	    default:
-		    XDrawString(dpy, win, gc, width + line_len, height+0 * k, message + i, 1);
-		    line_len += XTextWidth(fontinfo, message + i, 1);
-	}
-    }
-
-    /* xsi should not be NULL anyway if Xinerama is active, but to be safe */
-    if (XineramaIsActive(dpy) && xsi != NULL) XFree(xsi);
-}
 
 static const char *
 gethash(void)
@@ -243,6 +135,32 @@ gethash(void)
 #endif /* HAVE_SHADOW_H */
 
 	return hash;
+}
+
+static void
+resizerectangles(struct lock *lock)
+{
+	int i;
+
+	for (i = 0; i < LENGTH(rectangles); i++){
+		lock->rectangles[i].x = (rectangles[i].x * logosize)
+                                + lock->xoff + ((lock->mw) / 2) - (logow / 2 * logosize);
+		lock->rectangles[i].y = (rectangles[i].y * logosize)
+                                + lock->yoff + ((lock->mh) / 2) - (logoh / 2 * logosize);
+		lock->rectangles[i].width = rectangles[i].width * logosize;
+		lock->rectangles[i].height = rectangles[i].height * logosize;
+	}
+}
+
+static void
+drawlogo(Display *dpy, struct lock *lock, int color)
+{
+	XSetForeground(dpy, lock->gc, lock->colors[color]);
+	XFillRectangle(dpy, lock->drawable, lock->gc, 0, 0, lock->x, lock->y);
+	XSetForeground(dpy, lock->gc, lock->colors[BACKGROUND]);
+	XFillRectangles(dpy, lock->drawable, lock->gc, lock->rectangles, LENGTH(rectangles));
+	XCopyArea(dpy, lock->drawable, lock->win, lock->gc, 0, 0, lock->x, lock->y, 0, 0);
+	XSync(dpy, False);
 }
 
 static void
@@ -312,11 +230,7 @@ readpw(Display *dpy, struct xrandr *rr, struct lock **locks, int nscreens,
 			    : (( failure || failonclear ) ? FAILED : INIT );
 			if (running && oldc != color) {
 				for (screen = 0; screen < nscreens; screen++) {
-					XSetWindowBackground(dpy,
-					                     locks[screen]->win,
-					                     locks[screen]->colors[color]);
-					XClearWindow(dpy, locks[screen]->win);
-					writemessage(dpy, locks[screen]->win, screen);
+					drawlogo(dpy, locks[screen], color);
 				}
 				oldc = color;
 			}
@@ -351,6 +265,10 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 	XColor color, dummy;
 	XSetWindowAttributes wa;
 	Cursor invisible;
+#ifdef XINERAMA
+	XineramaScreenInfo *info;
+	int n;
+#endif
 
 	if (dpy == NULL || screen < 0 || !(lock = malloc(sizeof(struct lock))))
 		return NULL;
@@ -364,12 +282,31 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 		lock->colors[i] = color.pixel;
 	}
 
+	lock->x = DisplayWidth(dpy, lock->screen);
+	lock->y = DisplayHeight(dpy, lock->screen);
+#ifdef XINERAMA
+	if ((info = XineramaQueryScreens(dpy, &n))) {
+		lock->xoff = info[0].x_org;
+		lock->yoff = info[0].y_org;
+		lock->mw = info[0].width;
+		lock->mh = info[0].height;
+	} else
+#endif
+	{
+		lock->xoff = lock->yoff = 0;
+		lock->mw = lock->x;
+		lock->mh = lock->y;
+	}
+	lock->drawable = XCreatePixmap(dpy, lock->root,
+            lock->x, lock->y, DefaultDepth(dpy, screen));
+	lock->gc = XCreateGC(dpy, lock->root, 0, NULL);
+	XSetLineAttributes(dpy, lock->gc, 1, LineSolid, CapButt, JoinMiter);
+
 	/* init */
 	wa.override_redirect = 1;
-	wa.background_pixel = lock->colors[INIT];
+	wa.background_pixel = lock->colors[BACKGROUND];
 	lock->win = XCreateWindow(dpy, lock->root, 0, 0,
-	                          DisplayWidth(dpy, lock->screen),
-	                          DisplayHeight(dpy, lock->screen),
+						   	  lock->x, lock->y,
 	                          0, DefaultDepth(dpy, lock->screen),
 	                          CopyFromParent,
 	                          DefaultVisual(dpy, lock->screen),
@@ -378,6 +315,8 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 	invisible = XCreatePixmapCursor(dpy, lock->pmap, lock->pmap,
 	                                &color, &color, 0, 0);
 	XDefineCursor(dpy, lock->win, invisible);
+
+	resizerectangles(lock);
 
 	/* Try to grab mouse pointer *and* keyboard for 600ms, else fail the lock */
 	for (i = 0, ptgrab = kbgrab = -1; i < 6; i++) {
@@ -399,6 +338,10 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 				XRRSelectInput(dpy, lock->win, RRScreenChangeNotifyMask);
 
 			XSelectInput(dpy, lock->root, SubstructureNotifyMask);
+				unsigned int opacity = (unsigned int)(alpha * 0xffffffff);
+				XChangeProperty(dpy, lock->win, XInternAtom(dpy, "_NET_WM_WINDOW_OPACITY", False), XA_CARDINAL, 32, PropModeReplace, (unsigned char *)&opacity, 1L);
+				XSync(dpy, False);
+			drawlogo(dpy, lock, INIT);
 			return lock;
 		}
 
@@ -423,7 +366,7 @@ lockscreen(Display *dpy, struct xrandr *rr, int screen)
 static void
 usage(void)
 {
-	die("usage: slock [-v] [-f] [-m message] [cmd [arg ...]]\n");
+	die("usage: slock [-v] [cmd [arg ...]]\n");
 }
 
 int
@@ -436,23 +379,12 @@ main(int argc, char **argv) {
 	gid_t dgid;
 	const char *hash;
 	Display *dpy;
-	int i, s, nlocks, nscreens;
-	int count_fonts;
-	char **font_names;
+	int s, nlocks, nscreens;
 
 	ARGBEGIN {
 	case 'v':
 		fprintf(stderr, "slock-"VERSION"\n");
 		return 0;
-	case 'm':
-		message = EARGF(usage());
-		break;
-	case 'f':
-		if (!(dpy = XOpenDisplay(NULL))) die("slock: Cannot open display\n");
-		font_names = XListFonts(dpy, "*", 10000 /* list 10000 fonts */, &count_fonts);
-		for (i = 0; i < count_fonts; i++) {
-		    fprintf(stderr, "%s\n", *(font_names+i));
-		} return 0;
 	default:
 		usage();
 	} ARGEND
@@ -497,12 +429,10 @@ main(int argc, char **argv) {
 	if (!(locks = calloc(nscreens, sizeof(struct lock *))))
 		die("slock: out of memory\n");
 	for (nlocks = 0, s = 0; s < nscreens; s++) {
-		if ((locks[s] = lockscreen(dpy, &rr, s)) != NULL) {
-			writemessage(dpy, locks[s]->win, s);
+		if ((locks[s] = lockscreen(dpy, &rr, s)) != NULL)
 			nlocks++;
-		} else {
+		else
 			break;
-		}
 	}
 	XSync(dpy, 0);
 
@@ -527,5 +457,12 @@ main(int argc, char **argv) {
 	/* everything is now blank. Wait for the correct password */
 	readpw(dpy, &rr, locks, nscreens, hash);
 
+	for (nlocks = 0, s = 0; s < nscreens; s++) {
+		XFreePixmap(dpy, locks[s]->drawable);
+		XFreeGC(dpy, locks[s]->gc);
+	}
+
+	XSync(dpy, 0);
+	XCloseDisplay(dpy);
 	return 0;
 }

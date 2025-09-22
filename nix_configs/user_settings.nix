@@ -7,14 +7,12 @@
 
 		users = {
 			# Define root settings
-			root = {
-				shell = pkgs.powershell;
-			};
+			root = { shell = pkgs.powershell; };
 
 			# Define nixos-user settings
 			nixos = {
 				isNormalUser = true;
-				extraGroups = [ "wheel" "networkmanager" "libvirtd" "kvm" "lp" "video" "render" ];
+				extraGroups = [ "input" "wheel" "networkmanager" "libvirtd" "kvm" "lp" "video" "render" ];
 				useDefaultShell = true;
 				linger = true;
 			};

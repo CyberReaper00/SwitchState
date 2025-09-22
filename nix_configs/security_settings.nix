@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-    security = {
+	security = {
 		sudo = {
 			enable = true;
 			wheelNeedsPassword = false;
@@ -15,17 +15,17 @@
 				}];
 			}];
 		};
-		
+
 		wrappers = {
 
 			slock = {
-			   owner = "root";
-			   group = "root";
-			   setuid = true;
-			   source = "${pkgs.slock}/bin/slock";
-		   };
+				owner = "root";
+				group = "root";
+				setuid = true;
+				source = "${pkgs.slock}/bin/slock";
+			};
 		};
-    };
+	};
 
     # System install version
     system.stateVersion = "24.11";

@@ -1,5 +1,4 @@
 { config, lib, pkgs, ... }:
-
 let
 	custom_fonts = pkgs.callPackage /home/nixos/nixos/nix_configs/font_settings.nix { inherit pkgs; };
 in
@@ -19,31 +18,32 @@ in
     # Set your time zone.
     time.timeZone = "Asia/Karachi";
 
-    # Enable the X11 windowing system
-    services = {
+    # Enable the X11 services
+	services = {
+
 		# Xserver Settings
 		xserver = {
 			enable = true;
-			videoDrivers = ["modesetting"];
 
 			# Configure keymap in X11
 			xkb = {
-				options = "caps:escape";
-			#	 layout = lib.mkForce "custom";
-			#    model = "";
-			#    extraLayouts = {
-			#        custom = {
-			#    	description = "New BS";
-			#    	languages = [ "eng" ];
-			#    	symbolsFile = /etc/xkb/symbols/custom;
-			#        };
-			#    };
+				layout = "us,pk(urd-phonetic)";
+				options = "caps:ctrl_modifier, grp:alts_toggle";
+				# extraLayouts = {
+				# 	basic = {
+				# 		description = "Remaps that make it easier to use qwerty";
+				# 		languages = [ "eng" ];
+				# 		symbolsFile = /home/nixos/nixos/user_configs/better_maps;
+				# 	};
+				# };
 			};
 		};
 
-		cloudflared = {
-			enable = true;
-		};
+		# Enable flatpak
+		flatpak.enable = true;
+
+		# Enable cloudflared for tunnelling
+		cloudflared.enable = true;
 
 		# Enable CUPS to print documents
 		printing.enable = true;
@@ -66,26 +66,27 @@ in
 		# Starting compositor
 		picom = {
 			enable = true;
-
 			settings = {
-				#frame-opacity = 1.0;
+				# frame-opacity = 1.0;
 				opacity-rule = [
-					"70:class_g = 'qterminal'"
+					"60:class_g = 'XTerm'"
 				];
 			};
 		};
-    };
 
+		dbus.enable = true;
+		kubo.enable = true;
+	};
+
+	# Enable bluetooth support
     hardware = {
 		bluetooth.enable = true;
 		graphics = {
 			enable = true;
-			extraPackages = with pkgs; [
-				vaapiIntel
-				libva-utils
-			];
+			enable32Bit = true;
+			# package32 = pkgs.intel-vaapi-drive;
 		};
-    };
+	};
 
     # System fonts
     fonts = {
@@ -96,6 +97,7 @@ in
 			custom_fonts.vandria
 			custom_fonts.winking
 			custom_fonts.dm_serif
+			custom_fonts.quicksand
 		];
 
 		fontconfig = {

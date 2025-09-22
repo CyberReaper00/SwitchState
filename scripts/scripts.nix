@@ -25,17 +25,11 @@ rm -rf /home/nixos/.config/nvim
 ln -sf /home/nixos/nixos/user_configs/nvim_config /home/nixos/.config/nvim
 chown -h nixos:users /home/nixos/.config/nvim
 
-# Ghostty config
-mkdir -p /home/nixos/.config/ghostty
-ln -sf /home/nixos/nixos/user_configs/config /home/nixos/.config/ghostty/config
-chown nixos:users /home/nixos/.config/ghostty/config
-
 # Rofi config
 mkdir -p /home/nixos/.config/rofi
-ln -sf /home/nixos/nixos/user_configs/config.rasi /home/nixos/.config/rofi/config.rasi
+ln -sf /home/nixos/nixos/user_configs/rofi-config/config.rasi /home/nixos/.config/rofi/config.rasi
 chown nixos:users /home/nixos/.config/rofi/config.rasi
 
-install -m 755 -o nixos -g users /home/nixos/nixos/scripts/startup.sh /home/nixos/.startup.sh
 install -m 755 -o nixos -g users /home/nixos/nixos/scripts/sysinfo.ps1 /home/nixos/.sysinfo.ps1
 install -m 755 -o nixos -g users /home/nixos/nixos/scripts/brightness_controller.ps1 /home/nixos/.brightness_controller.ps1
 

@@ -1,0 +1,27 @@
+#cannot map to numbers because you can only map to functions not text
+
+unmap H
+unmap L
+unmap J
+unmap M
+unmap ;
+noremap j jzz
+noremap k kzz
+noremap a i
+noremap A I
+noremap i a
+noremap I A
+noremap H ^
+noremap L $
+noremap J <C-d>zz
+noremap K <C-u>zz
+noremap <C-a> ggVG"+y
+noremap y "+y
+noremap M `
+noremap gg ggzz
+noremap G Gzz
+map ; R
+noremap W e
+noremap B ge
+vnoremap d "+d
+inoremap jio <LT>span-class='update'><LT>/span>

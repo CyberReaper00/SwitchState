@@ -5,102 +5,76 @@
     environment = {
 		# Default Applications
 		variables = {
-			EDITOR	= "${pkgs.neovim}/bin/nvim";
-			VISUAL	= "${pkgs.neovim}/bin/nvim";
-			BROWSER	= "${pkgs.chromium}/bin/chromium";
-			TERMINAL	= "${pkgs.lxqt.qterminal}/bin/qterminal";
+			EDITOR		= "${pkgs.neovim}/bin/nvim";
+			VISUAL		= "${pkgs.neovim}/bin/nvim";
+			BROWSER		= "${pkgs.chromium}/bin/chromium";
+			TERMINAL	= "xterm";
 			NIXPKGS_ALLOW_UNFREE = "1";
 		};
 
-		systemPackages = with pkgs; [
-			OVMF
-			abuse
-			alsa-utils
-			audacity
-			blueman
+		systemPackages = with pkgs // pkgs.xorg; [
+			# OVMF
+			# audacity
 			brightnessctl
 			btop
-			copyq
-			cosmic-ext-calculator
-			discord
-			dmenu
-			dwm
+			copycat
 			easyeffects
+			evtest
 			fastfetch
 			fd
-			feh
-			firefox
+			# ffmpeg
+			# firefox
 			flameshot
 			gh
-			#ghostty
 			git
 			gimp
+			# glib
 			gnome-characters
 			go
-			gost
 			gpick
-			home-manager
-			hugo
-			icu
+			gvfs
+			kid3
+			killall
 			libreoffice
-			lxqt.qterminal
-			kdePackages.dolphin
-			mediawriter
-			mesa
-			mpv
-			neovide
+			# libnotify
+			# mediawriter
+			# mpv
 			neovim
-			nodePackages.nodejs
+			# nodePackages.nodejs
 			ntfs3g
 			obsidian
 			ollama
+			pandoc
 			pamixer
 			pavucontrol
 			pciutils
 			picom
-			powershell
 			pulseaudio
 			pureref
+			qalculate-gtk
 			qbittorrent-enhanced
-			qemu
 			ripgrep
-			rofi
-			rofi-calc
-			slock
-			slstatus
-			st
 			steam
+			syncthing
+			# sxhkd
 			tldr
-			tmux
+			# tmux
 			tor-browser
-			tree
+			# tree
 			ungoogled-chromium
-			unzip
-			virt-manager
 			vlc
 			xclip
+			xev
 			xdotool
-			xfce.mousepad
-			xlsfonts
-			xorg.libXinerama
-			xorg.xdpyinfo
-			xorg.xinit
-			xorg.xsetroot
-			xprintidle
-			xwinwrap
 
 			# Games
 			_20kly
-			endless-sky
 			superTuxKart
 			zaz
 
-			# Zig Packages
-			zig
-
 			# python packages
-			python312Full
 			/*
+			python312Full
 			python312Packages.pip
 			python312Packages.tzdata
 			python312Packages.nuitka

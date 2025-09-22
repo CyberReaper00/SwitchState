@@ -2,7 +2,7 @@
 
 {
     imports =
-	[ # Include the results of the hardware scan.
+	[   # Include the results of the hardware scan.
 	    ./hardware-configuration.nix
 	    ./nix_configs/user_settings.nix
 	    ./nix_configs/nix_settings.nix
@@ -10,13 +10,20 @@
 	    ./nix_configs/system_settings.nix
 	    ./nix_configs/env_settings.nix
 	    ./nix_configs/security_settings.nix
-    ];
+	];
 
-	environment.sessionVariables.ENVIRONMENT = "DEEPIN";
+	environment.systemPackages = with pkgs; [
+		rofi
+	];
 
-    services.xserver = {
+	services.xserver = {
 		enable = true;
-		displayManager.gdm.enable = true;
-		desktopManager.deepin.enable = true; 
-    };
+		displayManager = {
+			lightdm.enable = true;
+			sessionCommands = ''
+				xterm &
+			'';
+		};
+		windowManager.twm.enable = true;
+	};
 }

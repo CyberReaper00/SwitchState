@@ -4,7 +4,7 @@ $br_low = "10%"
 $br_high = "100%"
 $state = "normal"
 $power_state = $null
-$exclude_instances = @("vlc", "crx_agimnkijcaahngcdmfeangaknmldooml")
+$exclude_insts = @("vlc", "crx_agimnkijcaahngcdmfeangaknmldooml")
 
 function idle_time { return [int](xprintidle) }
 
@@ -28,13 +28,13 @@ function get_focus {
 
 while ($true) {
     $idle_ms = idle_time
-    $current_instance = get_focus
+    $current_inst = get_focus
 
-    Write-Host "Idle: $idle_ms, State: $state, Focused: $current_instance"
+    Write-Host "Idle: $idle_ms, State: $state, Focused: $current_inst"
 
     $exclude = $false
-	foreach ($instance in $exclude_instances) {
-		if ($current_instance -like "*$instance*") {
+	foreach ($inst in $exclude_insts) {
+		if ($current_inst -like "*$inst*") {
 			$exclude = $true
 			break
 		}
