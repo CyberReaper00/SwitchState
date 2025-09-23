@@ -48,6 +48,7 @@
 			pamixer
 			pavucontrol
 			pciutils
+			linuxKernel.packages.linux_6_12.perf
 			picom
 			pulseaudio
 			pureref
@@ -60,7 +61,7 @@
 			tldr
 			# tmux
 			tor-browser
-			# tree
+			tree
 			ungoogled-chromium
 			vlc
 			xclip
@@ -73,8 +74,8 @@
 			zaz
 
 			# python packages
-			/*
 			python312Full
+			/*
 			python312Packages.pip
 			python312Packages.tzdata
 			python312Packages.nuitka

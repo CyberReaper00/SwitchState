@@ -1,21 +1,26 @@
 { config, lib, pkgs, ... }:
+# video/mp4 = "vlc.desktop";
+# video/x-matroska = "vlc.desktop";
+# video/webm = "vlc.desktop";
+# video/quicktime = "vlc.desktop";
+# video/x-msvideo = "vlc.desktop";
 
 let
 	mimeapp-list = pkgs.writeText "mimeapps.txt" ''
 [Default Applications]
-text/plain=org.xfce.mousepad.desktop;
-application/pdf=chromium.desktop;
-image/png=pureref.desktop;
-image/jpg=pureref.desktop;
-image/jpeg=pureref.desktop;
-image/gif=pureref.desktop;
-x-scheme-handler/http=chromium.desktop;
-x-scheme-handler/https=chromium.desktop;
+text/plain =				org.xfce.mousepad.desktop;
+application/pdf =			chromium.desktop;
+image/png =					pureref.desktop;
+image/jpg =					pureref.desktop;
+image/jpeg =				pureref.desktop;
+image/gif =					pureref.desktop;
+x-scheme-handler/http =		chromium.desktop;
+x-scheme-handler/https =	chromium.desktop;
 
 [Added Associations]
 
 [Removed Associations]
-image/gif=vlc.desktop;
+image/gif =		vlc.desktop;
 	'';
 in
 {
@@ -49,12 +54,6 @@ in
 
 			extraOpts = {
 				"WebAppInstallForceList" = [
-					#{
-					#	"custom_name" = "Youtube";
-					#	"create_desktop_shortcut" = false;
-					#	"default_launch_container" = "window";
-					#	"url" = "https://youtube.com";
-					#}
 					{
 						"custom_name" = "Gemini";
 						"create_desktop_shortcut" = false;

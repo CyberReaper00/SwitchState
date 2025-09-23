@@ -1,7 +1,5 @@
 { config, lib, pkgs, ... }:
-let
-	custom_fonts = pkgs.callPackage /home/nixos/nixos/nix_configs/font_settings.nix { inherit pkgs; };
-in
+
 {
     # Use the systemd-boot EFI boot loader
     boot.loader = {
@@ -67,10 +65,7 @@ in
 		picom = {
 			enable = true;
 			settings = {
-				# frame-opacity = 1.0;
-				opacity-rule = [
-					"60:class_g = 'XTerm'"
-				];
+				opacity-rule = [ "80:class_g = 'XTerm'" ];
 			};
 		};
 
@@ -87,24 +82,4 @@ in
 			# package32 = pkgs.intel-vaapi-drive;
 		};
 	};
-
-    # System fonts
-    fonts = {
-		packages = with pkgs; [
-			hasklig
-			cascadia-code
-			custom_fonts.monkey
-			custom_fonts.vandria
-			custom_fonts.winking
-			custom_fonts.dm_serif
-			custom_fonts.quicksand
-		];
-
-		fontconfig = {
-			enable = true;
-			defaultFonts = {
-				monospace = [ "Cascadia Code PL" "Cascadia Code Mono" "Hasklig" ];
-			};
-		};
-    };
 }

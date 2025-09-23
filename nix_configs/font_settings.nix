@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 
 /*  
 	Instructions:
@@ -18,11 +18,31 @@ let
 				cp -r $src/* $out/share/fonts/${font_type}/
 			'';
 		};
-in
-{
+
 	monkey		= new_font "monkey"		"opentype";
-	vandria		= new_font "vandria"	"opentype";
 	winking		= new_font "winking"	"opentype";
+	vandria		= new_font "vandria"	"opentype";
 	dm_serif	= new_font "dm_serif"	"truetype";
 	quicksand	= new_font "quicksand"	"truetype";
+in
+{
+    # System fonts
+	fonts = {
+		packages = with pkgs; [
+			hasklig
+			cascadia-code
+			monkey
+			vandria
+			winking
+			dm_serif
+			quicksand
+		];
+
+		fontconfig = {
+			enable = true;
+			defaultFonts = {
+				monospace = [ "Cascadia Code PL" "Cascadia Code Mono" "Hasklig" ];
+			};
+		};
+	};
 }

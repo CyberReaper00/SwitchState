@@ -5,18 +5,17 @@
 { config, lib, pkgs, ... }:
 let
 	sets = pkgs // pkgs.xorg // pkgs.xfce;
+
+	# Get a list of all .nix files in the nix_configs directory
+	nix_config_files = builtins.filter (p: lib.strings.hasSuffix ".nix" p)
+									(builtins.attrNames (builtins.readDir ./nix_configs));
+
+	# Map the filenames to full paths
+	config_paths = builtins.map (name: ./nix_configs + "/${name}") nix_config_files;
 in
 {
     imports =
-	[   # Include the results of the hardware scan.
-	    ./hardware-configuration.nix
-	    ./nix_configs/user_settings.nix
-	    ./nix_configs/nix_settings.nix
-	    ./nix_configs/defaults.nix
-	    ./nix_configs/system_settings.nix
-	    ./nix_configs/env_settings.nix
-	    ./nix_configs/security_settings.nix
-	];
+	[ ./hardware-configuration.nix ] ++ config_paths;
 
 	environment = {
 		systemPackages = with sets; [
@@ -37,6 +36,7 @@ in
 			slock
 			udev
 			unzip
+			virtualbox
 			xbindkeys
 			xdpyinfo
 			xlsfonts
@@ -45,8 +45,6 @@ in
 			xprintidle
 		];
 	};
-
-	virtualisation.virtualbox.host.enable = true;
 
 	services = {
 		xserver = {
