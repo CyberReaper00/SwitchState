@@ -1,8 +1,6 @@
 {
     description = "Main Flake";
-    inputs = {
-		nixpkgs.url = "nixpkgs/nixos-25.05";
-	};
+    inputs = { nixpkgs.url = "nixpkgs/nixos-25.05"; };
 
     outputs = { self, nixpkgs, ... }:
     let
