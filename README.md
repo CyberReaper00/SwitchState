@@ -5,7 +5,7 @@ In this config I can switch my system state to be any DE or WM with just one com
 
 Currently I have defined five seperate system states that the config can use but with the architecture of nixos and the simplistic design of my setup the number of states (configurations) can be increased to handle and switch between infinite system configs and a new one can be create in about five minutes - they would just need to be defined appropriately
 
-I have made it as simple as possible so that anyone who wants to try using this as their system, whether new or old, can do so. However, the system uses flakes and a very spreadout config of over a dozen files, so it must be advised that people new to NixOS check out the [wiki](https://github.com/CyberReaper00/SwitchState.wiki.git) that ive made, which goes over how a configuration is setup in nixos and how to use it
+I have made it as simple as possible so that anyone who wants to try using this as their system, whether new or old, can do so. However, the system uses flakes and a very spreadout config of over a dozen files, so it must be advised that people new to NixOS check out the [wiki](https://github.com/CyberReaper00/SwitchState/wiki) that ive made, which goes over how a configuration is setup in nixos and how to use it
 
 If you are not already familiar with the nix way of doing things then going through this config will be next to impossible
 
