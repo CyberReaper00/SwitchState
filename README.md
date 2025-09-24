@@ -1,4 +1,4 @@
-# Overview
+# SwitchState
 This is my NixOS configuration that I have built it in the most nix way as I possibly could
 
 In this config I can switch my system state to be any DE or WM with just one command, admittedly through an alias in my shell config
