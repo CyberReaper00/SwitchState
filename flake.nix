@@ -9,7 +9,7 @@
 	{
 		nixosConfigurations = {
 			main-config = lib.nixosSystem {
-				system = "x84_64-linux";
+				system  = "x84_64-linux";
 				modules = [ /home/nixos/nixos/dwm_config.nix ];
 			};
 		};
