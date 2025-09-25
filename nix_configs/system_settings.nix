@@ -64,8 +64,14 @@
 		# Starting compositor
 		picom = {
 			enable = true;
+			vSync = true;
 			settings = {
 				opacity-rule = [ "80:class_g = 'XTerm'" ];
+				blur = {
+					method = "gaussian";
+					size = 10;
+					deviation = 5;
+				};
 			};
 		};
 
