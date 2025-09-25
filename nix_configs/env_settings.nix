@@ -15,6 +15,7 @@
 		systemPackages = with pkgs // pkgs.xorg; [
 			# OVMF
 			# audacity
+			bc
 			brightnessctl
 			btop
 			copycat
